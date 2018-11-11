@@ -1,0 +1,28 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'ReceiptScanner' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+	pod 'TesseractOCRiOS', '4.0.0'
+  # Pods for ReceiptScanner
+
+  target 'ReceiptScannerTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
+
+target 'ReceiptScanner-tvOS' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for ReceiptScanner-tvOS
+
+  target 'ReceiptScanner-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end

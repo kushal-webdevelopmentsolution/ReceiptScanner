@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, StatusBar, Dimensions} from 'react-native';
+import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import AppStatusBar from './AppStatusBar.js';
@@ -16,9 +16,6 @@ const instructions = Platform.select({
     'Double tap R on your keyboard to reload,\n' +
     'Shake or press menu button for dev menu',
 });
-
-var deviceHeight = Dimensions.get('window').height;
-var deviceWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   pageView: {

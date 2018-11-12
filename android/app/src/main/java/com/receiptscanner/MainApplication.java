@@ -4,10 +4,8 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNPdfScannerPackage;
-import com.reactlibrary.RNTesseractOcrPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.rnfs.RNFSPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -30,10 +28,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNPdfScannerPackage(),
-            new RNTesseractOcrPackage(),
             new RNCameraPackage(),
             new VectorIconsPackage(),
-            new ImagePickerPackage(),
             new RNFSPackage()
       );
     }

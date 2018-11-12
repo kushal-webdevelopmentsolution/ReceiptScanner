@@ -70,16 +70,7 @@ class CameraScanner extends Component {
           ocrData.append("detectOrientation",true);
           ocrData.append("isTable",true);
       
-        /*let ocrData = {
-            "base64Image":'data:image/jpeg;base64,' + response.data,
-            "language":"eng",
-            "filetype":"JPG",
-            "apikey":"9cc43a763c88957",
-            "scale":true,
-            "isOverlayRequired":true,
-            "detectOrientation":true,
-            "isTable":true
-        }*/  
+        
         imgToText(ocrData).then(res => {
             var Data = JSON.parse(res._bodyText);
             this.setState({

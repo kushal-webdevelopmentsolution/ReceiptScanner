@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Dimensions} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import Home from './components/Home.js';
@@ -15,10 +15,6 @@ import CameraScanner from './components/Scanner.js';
 import DocumentScanner from './components/DocumentScanner.js';
 import ViewReceiptDetail from './components/ViewReceiptDetail.js';
 import BottomToolBar from './components/BottomToolBar.js';
-
-
-var deviceHeight = Dimensions.get('window').height;
-var deviceWidth = Dimensions.get('window').width;
 
 const HomeTab = createStackNavigator({
     Home:{

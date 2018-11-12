@@ -11,6 +11,7 @@ import AppStatusBar from './AppStatusBar.js';
 import Images from '../modal/Images.js';
 import Transactions from '../modal/Transactions.js';
 import {saveImages,sendImage,imgToText} from '../services/ImagesService.js';
+import Scanner from 'react-native-document-scanner';
 
 const options = {
     title: 'Select Avatar',
@@ -21,7 +22,7 @@ const options = {
   },
 };
 
-class Scanner extends Component {
+class CameraScanner extends Component {
     
  state = {
     avatarSource: null,

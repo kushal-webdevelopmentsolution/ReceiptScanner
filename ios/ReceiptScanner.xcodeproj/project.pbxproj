@@ -29,6 +29,7 @@
 		18748500D5F040098B1AE6AA /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 728937FA266342318097A979 /* libRNFS.a */; };
 		2904CE0321977A7A00EAD62A /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2904CDFB219779F600EAD62A /* libRNCamera.a */; };
 		29118D7F2196528F0029F303 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 29118D7E2196528F0029F303 /* tessdata */; };
+		293FB6022198BCBE0012ECF4 /* libRNPdfScanner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 293FB6012198B4090012ECF4 /* libRNPdfScanner.a */; };
 		295B8C8F2197DE670013B097 /* libRNTesseractOcr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 295B8C8E2197DB910013B097 /* libRNTesseractOcr.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -47,7 +48,6 @@
 		52F860A2CAD64E8EA503976C /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB1E390996114397B6857030 /* Entypo.ttf */; };
 		5B012951F29A4B9590B3BF43 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 32A6D319CFF34D759D20E563 /* Foundation.ttf */; };
 		5B0A82546BDF4896A1C26BE2 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 212A95982EFC4371A2DACD48 /* EvilIcons.ttf */; };
-		6A65C4F5345E48D2915E1C9C /* libRNPdfScanner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6D61B3F7D4E28808773FF /* libRNPdfScanner.a */; };
 		6CAAF0729B694DE1BB4E7DBF /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66E854DE46A24376A885FF10 /* FontAwesome.ttf */; };
 		73EC9D75B44B4127BB51F286 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 095CCDF614BF41578232B1BA /* FontAwesome5_Brands.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -477,6 +477,7 @@
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				293FB6022198BCBE0012ECF4 /* libRNPdfScanner.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				2904CE0321977A7A00EAD62A /* libRNCamera.a in Frameworks */,
@@ -484,7 +485,6 @@
 				DFD025E1AD6B47B581BD476E /* libRNImagePicker.a in Frameworks */,
 				295B8C8F2197DE670013B097 /* libRNTesseractOcr.a in Frameworks */,
 				17830DD169194459899E1B3E /* libRNVectorIcons.a in Frameworks */,
-				6A65C4F5345E48D2915E1C9C /* libRNPdfScanner.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

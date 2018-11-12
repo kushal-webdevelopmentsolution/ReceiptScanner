@@ -5,8 +5,9 @@ import {Platform, StyleSheet, Text, View, StatusBar, Dimensions} from 'react-nat
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import AppStatusBar from './AppStatusBar.js';
-import Camera from './Scanner.js';
-
+import CameraScanner from './Scanner.js';
+import DocumentScanner from './DocumentScanner.js';
+import ViewReceiptDetail from './ViewReceiptDetail.js';
 
 
 const instructions = Platform.select({
@@ -30,12 +31,11 @@ const styles = StyleSheet.create({
 });
 
 
-class Home extends Component {
+export default class Home extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.pageView} forceInset={{ top: 'never',bottom:'never' }}>
-
+      <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>
         <View style={styles.homeScreen}>
           <Text> {instructions} </Text>
         </View>
@@ -43,53 +43,4 @@ class Home extends Component {
     );
   }
 }
-
-const HomeTab = createBottomTabNavigator({
-  Home: {
-    screen: Home,
-  },
-  Camera: {
-    screen: Camera,
-  },
-},{
-  tabBarOptions: {
-  activeTintColor: '#FFFFFF',
-    labelStyle: {
-      fontSize: 18,
-      fontWeight:'bold',
-    },
-    style: {
-      backgroundColor: '#f4511e',
-      color: 'white',
-
-    },
-    }
-  }
-);
-
-HomeTab.navigationOptions = {
-    title: 'Home',
-    headerStyle: {
-      backgroundColor: '#f4511e',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-      fontSize:20,
-    },
-    headerRight: (
-        <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-      ),
-    headerLeft: (
-        <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-      ),
-  };
-
-export default createStackNavigator({
-  Home: {
-    screen: HomeTab
-  },
-}, {
-  //headerMode: 'none',
-});
 

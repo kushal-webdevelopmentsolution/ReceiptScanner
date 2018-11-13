@@ -7,22 +7,38 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, AsyncStorage} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
+import Login from './components/login.js';
+import Signup from './components/signup.js';
 import Home from './components/Home.js';
 import CameraScanner from './components/Scanner.js';
 import DocumentScanner from './components/DocumentScanner.js';
 import ViewReceiptDetail from './components/ViewReceiptDetail.js';
 import BottomToolBar from './components/BottomToolBar.js';
 
+
+const SignupTab = createStackNavigator({
+     Signup:{
+      screen:Signup,  
+    }
+});
+const LoginTab = createStackNavigator({
+    Login:{
+      screen:Login,  
+    }
+},
+{
+    initialRouteName: 'Login',
+});
 const HomeTab = createStackNavigator({
     Home:{
       screen:Home,
       navigationOptions:() => ({
         title: 'Home',
         headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#c6535b',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -42,7 +58,7 @@ const HomeTab = createStackNavigator({
       navigationOptions:() => ({
         title: 'Scanner',
         headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#c6535b',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -59,7 +75,7 @@ const HomeTab = createStackNavigator({
     },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Signup',
   }
 );
 
@@ -69,7 +85,7 @@ const DocumentScannerTab = createStackNavigator({
       navigationOptions:() => ({
         title: 'Scanner',
         headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#c6535b',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -89,7 +105,7 @@ const DocumentScannerTab = createStackNavigator({
       navigationOptions:() => ({
         title: 'View',
         headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#c6535b',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -117,13 +133,38 @@ const AppNavigation = createBottomTabNavigator({
   tabBarOptions: {
   title:'Receipt Scanner',    
   activeTintColor: '#FFFFFF',
+  inactiveTintColor: '#000',
     labelStyle: {
       fontSize: 18,
       fontWeight:'bold',
     },
     style: {
-      backgroundColor: '#f4511e',
+      backgroundColor: '#c6535b',
       color: 'white',
+
+    },
+    }
+  }
+)
+
+const LoginNavigation = createBottomTabNavigator({
+  Login:{
+    screen:LoginTab
+  },    
+  Signup: {
+    screen: SignupTab
+  }
+},{
+  tabBarOptions: { 
+  activeTintColor: '#FFFFFF',
+  inactiveTintColor: '#000',      
+    labelStyle: {
+      fontSize: 18,
+      fontWeight:'bold',
+    },
+    style: {
+      backgroundColor: '#c6535b',
+      color: '#000',
 
     },
     }
@@ -134,7 +175,8 @@ const AppNavigation = createBottomTabNavigator({
 export default class App extends Component {
   render() {
     return (
-        <AppNavigation style={styles.appView}/>
+        <LoginNavigation style={styles.appView}/>
+        
     );
   }
 }

@@ -17,7 +17,6 @@ import CameraScanner from './components/Scanner.js';
 import DocumentScanner from './components/DocumentScanner.js';
 import ViewReceiptDetail from './components/ViewReceiptDetail.js';
 import BottomToolBar from './components/BottomToolBar.js';
-import Navigation from './components/BottomToolBar.js';
 
 const HomeTab = createStackNavigator({
     Home:{
@@ -137,11 +136,17 @@ const AppNavigation = createBottomTabNavigator({
 const SignupTab = createStackNavigator({
      Signup:{
       screen:Signup,  
+    },
+    Home:{
+      screen:AppNavigation,  
     }
 });
 const LoginTab = createStackNavigator({
     Login:{
       screen:Login,  
+    },
+    Home:{
+      screen:AppNavigation,  
     }
 },
 {
@@ -172,21 +177,7 @@ const LoginNavigation = createBottomTabNavigator({
   }
 )
 
-var AppView = async (props) => {
-  try {
-    
-    if (props.isLoggedIn) {
-       return <AppNavigation style={styles.appView}/>
-    }else{
-       return <LoginNavigation style={styles.appView}/>
-    }
-   } catch (error) {
-     // Error retrieving data
-   }
-}
-
-
-export default class App extends Component {
+export default class Navigation extends Component {
   
   constructor(props) {
     super(props);
@@ -195,18 +186,21 @@ export default class App extends Component {
   }
     
    async isLogged(){
-        var value = await AsyncStorage.getItem('user');
-        console.log("User ",user);
+    try {
+        const value = await AsyncStorage.getItem('@isLoggedIn');
         if (value !== null) {
             return value;
         }else{
             return false;
         }
+     } catch (error) {
+        // Error retrieving data
+     }
   }
  
   render() {
     return (
-         <LoginNavigation style={styles.appView}/>
+         {this.isLogged ? <LoginNavigation style={styles.appView}/> : <LoginNavigation style={styles.appView}/>}
     )
   }
 }

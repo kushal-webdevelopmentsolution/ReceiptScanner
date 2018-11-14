@@ -8,13 +8,17 @@ import {
   TouchableHighlight,
   View,    
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator,
+  Dimensions,
+  AsyncStorage
 } from 'react-native';
 
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon,FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
-
+import {signup} from '../services/UsersService.js';
+var {height, width} = Dimensions.get('window');
 export default class Signup extends Component {
   
   constructor(props) {
@@ -24,20 +28,24 @@ export default class Signup extends Component {
         lname:null,
         email:null,
         password:null,
-        confirm:null
+        confirm:null,
+        isLoading:false
     }
     this.onSubmit = this.onSubmit.bind(this); 
     this.validateInputs = this.validateInputs.bind(this);
+    this.openActivityIndicator = this.openActivityIndicator.bind(this);
+    this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+    this.emailExists = this.emailExists.bind(this);
+    this.resetTo = this.resetTo.bind(this);  
     this.validationMessage = {
                             fname:'',
                             lname:'',
                             email:'',
                             password:'',
                             confirm:''
-                          }; 
-   
+                          };
   }
-      
+    
   validateInputs(input,field){
       let emailCheck = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
       if(input && field==='fname'){
@@ -65,14 +73,58 @@ export default class Signup extends Component {
       }
       
   }
-    
-  onSubmit(input){
-      console.log("Input ", input);
+  emailExists(){
+      this.validationMessage.email = this.state.email + ' already Exists';
+  }  
+  openActivityIndicator(){
+     this.setState({isLoading:true});
+  }
+  closeActivityIndicator(){
+      this.setState({isLoading:false});
+  }
+  resetTo(route) {
+    const navigateAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: route })],
+  });
+
+  this.props.navigation.dispatch(navigateAction);
+  }       
+  async onSubmit(){
+      console.log('isLoading ',this.state.isLoading);
+      if(!this.state.isLoading){
+        this.openActivityIndicator();
+      }
+      let user={
+          fname:this.state.fname,
+          lname:this.state.lname,
+          email:this.state.email,
+          password:this.state.password
+      }
+      
+      var registerUser = await signup(JSON.stringify(user))
+                        .then(function(res){
+                            let response = JSON.parse(res._bodyText);
+                            return response;
+                         })
+      if(registerUser.constraint === "users_pkey"){
+            this.emailExists();
+            setTimeout(()=>{this.closeActivityIndicator()},3000);
+      }else{
+          user.isLoggedin='true';
+          var setUser = await AsyncStorage.setItem('user', JSON.stringify(user));
+          this.resetTo('Home');
+      }
   }    
   render() {
     return (
-        <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>        
+        <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>
             <ScrollView style={styles.container}>
+                <ActivityIndicator 
+                    style={styles.activityIndicator}
+                    animating={this.state.isLoading}
+                    size="large"
+                    color="#c6535b" />
                 <FormLabel>First Name</FormLabel>
                 <FormInput
                     placeholder='Frist Name'
@@ -101,7 +153,7 @@ export default class Signup extends Component {
                 }}/>
                 { this.state.email ?
                 <FormValidationMessage>{this.validationMessage.email}</FormValidationMessage> : null }
-            
+                
                 <FormLabel>Password</FormLabel>
                 <FormInput 
                     secureTextEntry={true}
@@ -124,7 +176,7 @@ export default class Signup extends Component {
                 { this.state.confirm ?
                 <FormValidationMessage>{this.validationMessage.confirm}</FormValidationMessage> : null }
             <View style={styles.buttonView}> 
-                <Button style={{width:150}} onPress={this.onSubmit(this.state)} title="Sign Me" />
+                <Button style={{width:150}} onPress={this.onSubmit} title="Sign Me" />
             </View>
                 
             </ScrollView>
@@ -147,5 +199,14 @@ const styles = StyleSheet.create({
       marginTop:30,
       justifyContent: 'center',
       alignItems: 'center'
-  }
+  },
+  activityIndicator: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      position:'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+   }    
 });

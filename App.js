@@ -8,7 +8,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, AsyncStorage} from 'react-native';
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import Login from './components/login.js';
 import Signup from './components/signup.js';
@@ -22,23 +22,6 @@ import Navigation from './components/BottomToolBar.js';
 const HomeTab = createStackNavigator({
     Home:{
       screen:Home,
-      navigationOptions:() => ({
-        title: 'Home',
-        headerStyle: {
-            backgroundColor: '#c6535b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:20,
-        },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-        ),
-        headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
-      })
     },
     Scanner: {
       screen:DocumentScanner,
@@ -52,17 +35,24 @@ const HomeTab = createStackNavigator({
             fontWeight: 'bold',
             fontSize:20,
         },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
+        headerRight: (
+            <Icon name='sign-out' 
+                  type='font-awesome' 
+                  containerStyle={styles.menuIcon} 
+                  onPress={() =>{
+                                 AsyncStorage.removeItem('user');
+                                 const navigateAction = StackActions.reset({
+                                                            index: 0,
+                                                            actions: [NavigationActions.navigate({ routeName: 'Login' })],
+                                                        });
+                                 this.props.navigation.dispatch(navigateAction);
+                                }} />
         ),
-        headerLeft: (
+        /*headerLeft: (
             <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
         ),*/
       })
     },
-  },
-  {
-    initialRouteName: 'Signup',
   }
 );
 
@@ -134,85 +124,86 @@ const AppNavigation = createBottomTabNavigator({
   }
 )
 
-const SignupTab = createStackNavigator({
-     Signup:{
-      screen:Signup,  
-    }
-});
-const LoginTab = createStackNavigator({
+const LoginNavigation = createStackNavigator({
     Login:{
-      screen:Login,  
+      screen:Login,
+      navigationOptions:() => ({
+        header:null
+      })  
+    },
+    Signup:{
+      screen:Signup,
+      navigationOptions:() => ({
+        header:null
+      }) 
+    },
+    Home:{
+      screen:AppNavigation,
+      navigationOptions:() => ({
+        header:null
+      }) 
     }
-},
-{
-    initialRouteName: 'Login',
 });
-
-const LoginNavigation = createBottomTabNavigator({
-  Login:{
-    screen:LoginTab
-  },    
-  Signup: {
-    screen: SignupTab
-  }
-},{
-  tabBarOptions: { 
-  activeTintColor: '#FFFFFF',
-  inactiveTintColor: '#000',      
-    labelStyle: {
-      fontSize: 18,
-      fontWeight:'bold',
-    },
-    style: {
-      backgroundColor: '#c6535b',
-      color: '#000',
-
-    },
-    }
-  }
-)
-
-var AppView = async (props) => {
-  try {
-    
-    if (props.isLoggedIn) {
-       return <AppNavigation style={styles.appView}/>
-    }else{
-       return <LoginNavigation style={styles.appView}/>
-    }
-   } catch (error) {
-     // Error retrieving data
-   }
-}
-
 
 export default class App extends Component {
-  
-  constructor(props) {
-    super(props);
-    this.isLogged = this.isLogged.bind(this);  
-    console.log("Login ",this.isLogged);
-  }
     
-   async isLogged(){
-        var value = await AsyncStorage.getItem('user');
-        console.log("User ",user);
-        if (value !== null) {
-            return value;
-        }else{
-            return false;
-        }
+  constructor(props){
+      super(props);
+      this.state={
+          isLoggedin:false,
+      }
+      this.view = this.view.bind(this);
+      this.renderView = this.renderView.bind(this);
   }
- 
+  async view (){
+         var details =  await AsyncStorage.getItem('user').then(function(user){
+             if(user !== null){
+                return JSON.parse(user)
+             }else{
+                 return false;
+             }
+         })
+         console.log('Details ',details);
+         if(!details){
+             
+         }else{
+             if(details.isLoggedin === 'true'){
+                this.setState({isLoggedin: true });
+            }
+         }
+      return details.isLoggedin;
+  }
+      
+  componentWillMount(){
+  }  
+  async componentDidMount() {
+    const renderComponent = await this.view();
+  }
+  
+  renderView() {
+    if(!this.renderComponent){
+        return <LoginNavigation style={styles.appView}/>;
+    }else{
+        return <AppNavigation style={styles.appView}/>;
+    }
+  };    
   render() {
-    return (
-         <LoginNavigation style={styles.appView}/>
+     
+     return (
+       <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>      
+        {this.renderView()}
+       </SafeAreaView>
     )
   }
 }
 
 const styles = StyleSheet.create({
+   pageView: {
+    flex: 1,
+    backgroundColor:'#c6535b',
+    color:'#FFFFFF'   
+  },
   appView:{
-    flex:1
+    flex:1,  
   },
 });

@@ -87,7 +87,6 @@ export default class Signup extends Component {
     index: 0,
     actions: [NavigationActions.navigate({ routeName: route })],
   });
-
   this.props.navigation.dispatch(navigateAction);
   }       
   async onSubmit(){
@@ -113,12 +112,11 @@ export default class Signup extends Component {
       }else{
           user.isLoggedin='true';
           var setUser = await AsyncStorage.setItem('user', JSON.stringify(user));
-          this.resetTo('Home');
+          //this.resetTo('Home');
       }
   }    
   render() {
     return (
-        <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>
             <ScrollView style={styles.container}>
                 <ActivityIndicator 
                     style={styles.activityIndicator}
@@ -180,7 +178,7 @@ export default class Signup extends Component {
             </View>
                 
             </ScrollView>
-        </SafeAreaView>
+     
     );
   }
 }

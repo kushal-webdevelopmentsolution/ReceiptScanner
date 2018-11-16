@@ -8,44 +8,60 @@ import {
   TouchableHighlight,
   View,    
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator,
+  Dimensions,
+  AsyncStorage
 } from 'react-native';
 
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon,FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
-import Scanner from 'react-native-document-scanner';
-
+import {signup,auth} from '../services/UsersService.js';
+var {height, width} = Dimensions.get('window');
 export default class Login extends Component {
   
   constructor(props) {
     super(props);
     this.state={
-        fname:null,
-        lname:null,
         email:null,
         password:null,
-        confirm:null
+        isLoading:false
     }
     this.onSubmit = this.onSubmit.bind(this); 
     this.validateInputs = this.validateInputs.bind(this);
+    this.openActivityIndicator = this.openActivityIndicator.bind(this);
+    this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+    this.emailExists = this.emailExists.bind(this);
+    this.resetTo = this.resetTo.bind(this);
+    this.authenticateUser = this.authenticateUser.bind(this);  
     this.validationMessage = {
-                            fname:'',
-                            lname:'',
                             email:'',
-                            password:'',
-                            confirm:''
-                          }; 
+                            password:''
+                          };
    
   }
-      
+  componentDidMount() {
+      this.authenticateUser();
+  }
+  async authenticateUser(){
+      var details =  await AsyncStorage.getItem('user').then(function(user){
+             if(user !== null){
+                return JSON.parse(user)
+             }else{
+                 return false;
+             }
+         })
+         if(!details){
+             
+         }else{
+            if(details.isLoggedin === 'true'){
+               this.resetTo('Home');
+            }
+         }
+  }    
   validateInputs(input,field){
       let emailCheck = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-      if(input && field==='fname'){
-          this.validationMessage.fname='Enter First Name';
-      }
-      if(!input && field==='lname'){
-          this.validationMessage.lname= 'Enter Last Name';
-      }
+      
       if(!input && field==='email'){
           this.validationMessage.email= 'Enter Email address';
       }else if (input && field==='email' && !emailCheck.test(input)){
@@ -55,36 +71,67 @@ export default class Login extends Component {
       }
       if(!input && field==='password'){
           this.validationMessage.password= 'Enter Password';
-      }
-      if(!input && field==='confirm'){
-          this.validationMessage.confirm= 'Enter Confirm Password';
-      }else if(input && field==='confirm' && (input !== this.state.password)){
-          this.validationMessage.confirm= 'Confirm Password not match';
-      }else{
-          this.validationMessage.confirm= '';
-      }
-      
+      }  
   }
+  emailExists(){
+      this.validationMessage.email = this.state.email + ' not Exists';
+  }  
+  openActivityIndicator(){
+     this.setState({isLoading:true});
+  }
+  closeActivityIndicator(){
+      this.setState({isLoading:false});
+  }
+  resetTo(route) {
+        const navigateAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: route })],
+        });
+    this.props.navigation.dispatch(navigateAction);
+  }       
+  async onSubmit(){
+      
+      if(!this.state.isLoading){
+        this.openActivityIndicator();
+      }
+      let user={
+          email:this.state.email,
+          password:this.state.password
+      }
+      console.log("user ", user);
+      var authorize = await auth(JSON.stringify(user)).then(function(res){
+                            let response = JSON.parse(res._bodyText);
+                            return response;
+                         })
+      console.log("authorize ", authorize);
+      if(authorize.rowCount === 0){
+            this.emailExists();
+            setTimeout(()=>{this.closeActivityIndicator()},3000);
+          resetTo('Login')
+      }else{
+          authorize.rows[0].isLoggedin='true';
+          var setUser = await AsyncStorage.setItem('user', JSON.stringify(authorize.rows[0]));
+          this.resetTo('Home');
+      }
+  } 
     
-  onSubmit(input){
-      console.log("Input ", input);
-  }    
   render() {
-    return (
-        <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>        
+    return (   
             <View style={styles.container}>
-                <FormLabel>Email</FormLabel>
-                <FormInput 
+                <FormLabel labelStyle={{color: '#fff'}}>Email</FormLabel>
+                <FormInput
+                    inputStyle={{color: '#fff'}}
                     placeholder='Email Address'
                     onChangeText={(email) => {
                         this.setState({email:email});
                         this.validateInputs(email,"email")
                 }}/>
                 { this.state.email ?
-                <FormValidationMessage>{this.validationMessage.email}</FormValidationMessage> : null }
+                <FormValidationMessage labelStyle={{color: '#fff'}}>{this.validationMessage.email}</FormValidationMessage> : null }
             
-                <FormLabel>Password</FormLabel>
+                <FormLabel labelStyle={{color: '#fff'}}>Password</FormLabel>
                 <FormInput 
+                    inputStyle={{color: '#fff'}}
                     secureTextEntry={true}
                     placeholder="Password"
                     onChangeText={(password) => {
@@ -92,13 +139,12 @@ export default class Login extends Component {
                         this.validateInputs(password,"password")
                 }}/>
                 { this.state.password ?
-                <FormValidationMessage>{this.validationMessage.password}</FormValidationMessage> : null }
+                <FormValidationMessage labelStyle={{color: '#fff'}}>{this.validationMessage.password}</FormValidationMessage> : null }
         
                 <View style={styles.buttonView}> 
-                    <Button style={{width:150}} onPress={this.onSubmit(this.state)} title="Sign Me" />
+                    <Button style={{width:150}} onPress={this.onSubmit} title="Log In" />
                 </View>  
             </View>
-        </SafeAreaView>
     );
   }
 }
@@ -106,11 +152,12 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   pageView: {
     flex: 1,
-    backgroundColor:'#F5F5F5',
+    backgroundColor:'#c6535b',
   },    
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#c6535b',
+    color:'#FFFFFF',  
     paddingTop:200  
   },
   buttonView:{

@@ -21,11 +21,9 @@ export default class ViewReceiptDetail extends Component {
     const details = this.props.navigation.state.params.details;
     console.log("Details ", this.props.navigation.state.params.details);
     return (
-        <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>        
             <ScrollView style={styles.container}>
                 <Text>{details.toString()}</Text>
             </ScrollView>
-        </SafeAreaView>
     );
   }
 }

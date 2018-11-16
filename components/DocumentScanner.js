@@ -59,7 +59,6 @@ export default class DocumentScanner extends Component {
 
   render() {
     return (
-    <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>    
       <View style={styles.container}>
         
         {this.state.image ?
@@ -106,7 +105,6 @@ export default class DocumentScanner extends Component {
           <Text>📸 Front Cam</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
     );
   }
 }

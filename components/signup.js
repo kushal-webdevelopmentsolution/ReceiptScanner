@@ -112,7 +112,7 @@ export default class Signup extends Component {
       }else{
           user.isLoggedin='true';
           var setUser = await AsyncStorage.setItem('user', JSON.stringify(user));
-          //this.resetTo('Home');
+          this.resetTo('Home');
       }
   }    
   render() {

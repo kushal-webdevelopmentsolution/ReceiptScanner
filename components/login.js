@@ -116,22 +116,28 @@ export default class Login extends Component {
   } 
     
   render() {
-    return (   
+    return ( 
+                
             <View style={styles.container}>
-                <FormLabel labelStyle={{color: '#fff'}}>Email</FormLabel>
+                <View style={styles.headerView}>
+                    <Image style={{width: 80, height: 80}} source={require('./img/receipt.png')} />
+                    <Text h1 style={styles.headerText}>Receipt Scanner</Text>
+                </View>
+                <View style={styles.loginbox}>
+                <FormLabel labelStyle={{color: '#c6535b',fontSize:16}}>Email</FormLabel>
                 <FormInput
-                    inputStyle={{color: '#fff'}}
+                    inputStyle={{color: '#c6535b'}}
                     placeholder='Email Address'
                     onChangeText={(email) => {
                         this.setState({email:email});
                         this.validateInputs(email,"email")
                 }}/>
                 { this.state.email ?
-                <FormValidationMessage labelStyle={{color: '#fff'}}>{this.validationMessage.email}</FormValidationMessage> : null }
+                <FormValidationMessage labelStyle={{color: '#c6535b'}}>{this.validationMessage.email}</FormValidationMessage> : null }
             
-                <FormLabel labelStyle={{color: '#fff'}}>Password</FormLabel>
+                <FormLabel labelStyle={{color: '#c6535b',fontSize:16}}>Password</FormLabel>
                 <FormInput 
-                    inputStyle={{color: '#fff'}}
+                    inputStyle={{color: '#c6535b'}}
                     secureTextEntry={true}
                     placeholder="Password"
                     onChangeText={(password) => {
@@ -139,11 +145,16 @@ export default class Login extends Component {
                         this.validateInputs(password,"password")
                 }}/>
                 { this.state.password ?
-                <FormValidationMessage labelStyle={{color: '#fff'}}>{this.validationMessage.password}</FormValidationMessage> : null }
+                <FormValidationMessage labelStyle={{color: '#c6535b'}}>{this.validationMessage.password}</FormValidationMessage> : null }
         
                 <View style={styles.buttonView}> 
-                    <Button style={{width:150}} onPress={this.onSubmit} title="Log In" />
-                </View>  
+                    <Button buttonStyle={{width:150,elevation:1}} fontWeight='bold' backgroundColor='#c6535b' onPress={this.onSubmit} title="Log In" />
+                </View>
+                <TouchableOpacity style={styles.registerLink} onPress={() => this.resetTo('Signup')}>
+                <Text style={{color: '#c6535b',fontSize:16,fontWeight:'700',textDecorationStyle:'solid',textDecorationLine:'underline'}}>Are you Registered ?</Text>
+                </TouchableOpacity>
+
+               </View>
             </View>
     );
   }
@@ -157,12 +168,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#c6535b',
-    color:'#FFFFFF',  
-    paddingTop:200  
   },
   buttonView:{
       flex:1,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      color: '#c6535b'
+  },
+  loginbox:{
+    marginLeft:15,
+    marginRight:15,  
+    height: 300,
+    backgroundColor:'#F5F5F5',
+  },
+  headerText:{
+      fontSize:36,
+      fontWeight:'bold',
+      justifyContent: 'center',
+      alignItems: 'center',
+      color:'#F5F5F5',
+      elevation:1,
+      paddingTop:10
+  },
+  headerView:{
+      paddingTop:25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      top:0,
+      bottom:0,
+      height:220
+  },
+  registerLink:{
+      flex:1,
+      justifyContent: 'center',
+      alignItems: 'center',
   }
+    
 });

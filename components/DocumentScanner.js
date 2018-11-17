@@ -5,16 +5,20 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  View
+  View,
+  ScrollView,    
+  ActivityIndicator,
+  AsyncStorage,
+  Dimensions
 } from 'react-native';
 
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
 import {saveImages,sendImage,imgToText} from '../services/ImagesService.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
 import AppStatusBar from './AppStatusBar.js';
-
+let {width, height} = Dimensions.get('window')
 export default class DocumentScanner extends Component {
   constructor(props) {
     super(props);
@@ -22,9 +26,69 @@ export default class DocumentScanner extends Component {
       image: null,
       flashEnabled: false,
       useFrontCam: false,
+      isLoading:false,
     };
+      this.resetTo = this.resetTo.bind(this);
+       this.openActivityIndicator = this.openActivityIndicator.bind(this);
+       this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+   }
+   resetTo(route) {
+    console.log('Route ', route);   
+    const navigateAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: route })],
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }  
+  static navigationOptions = ({navigation, styles}) => ({
+        title: 'Scanner',
+        headerStyle: {
+            backgroundColor: '#c6535b',
+        },
+        headerLayoutPreset: 'center',
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize:20,
+        },
+        headerRight: (
+            <Icon name='home' 
+                  type='font-awesome'
+                  containerStyle={{paddingRight:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() =>{
+                                 AsyncStorage.removeItem('user');
+                                 navigation.state.params.resetTo('Home');
+                                }}
+            />
+        ),
+       headerLeft: (
+            <Icon name='sign-out' 
+                  type='font-awesome'
+                  containerStyle={{paddingLeft:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() =>{
+                                 AsyncStorage.removeItem('user');
+                                 navigation.state.params.resetTo('Login');
+                                }}
+            />
+        ),
+      })    
+  openActivityIndicator(){
+     this.setState({isLoading:true});
   }
-
+  closeActivityIndicator(){
+      this.setState({isLoading:false});
+  }
+  componentWillMount() {
+      console.log(width);
+      this.openActivityIndicator();
+      const navigation = this.props.naviation;
+  }
+  componentDidMount() {
+      this.closeActivityIndicator();
+      this.props.navigation.setParams({ resetTo: this.resetTo });    
+  }
   renderDetectionType() {
     switch (this.state.lastDetectionType) {
       case 0:
@@ -59,19 +123,25 @@ export default class DocumentScanner extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        
-        {this.state.image ?
-          <Image style={{ flex: 1, width: 300, height: 200 }} source={{ uri: `data:image/jpeg;base64,${this.state.image}`}} resizeMode="contain" /> :
+      <ScrollView contentContainerStyle={styles.container}>
+        <ActivityIndicator 
+                    style={styles.activityIndicator}
+                    animating={this.state.isLoading}
+                    size="large"
+                    color="#c6535b" />  
+        {this.state.image ? 
+          <View style={{flex:1,borderWidth:1,width:width,height:height}}>    
+                <Image style={{ flex: 1,width:width, height:height,resizeMode:'contain' }} 
+                 source={{ uri: this.state.image}} /> 
+          </View>:
           <Scanner
-            useBase64
              onPictureTaken={data => this.setState({ image: data.croppedImage })}
             overlayColor="rgba(255,130,0, 0.7)"
             enableTorch={this.state.flashEnabled}
             useFrontCam={this.state.useFrontCam}
             brightness={0.2}
             saturation={0}
-            quality={0.5}
+            quality={1}
             contrast={1.2}
             onRectangleDetect={({ stableCounter, lastDetectionType }) => this.setState({ stableCounter, lastDetectionType })}
             detectionCountBeforeCapture={10}
@@ -87,24 +157,26 @@ export default class DocumentScanner extends Component {
         </Text>
         {this.state.image === null ?
           null :
+          <View style={{flex: 2, flexDirection: 'row', marginLeft:10, marginRight:10}}>
           <TouchableOpacity style={styles.newPic} onPress={() => this.setState({ image: "" })}>
-            <Text>Take another picture</Text>
+            <Text style={styles.buttonText}>Retake</Text>
           </TouchableOpacity>
-          
-        }
-        {this.state.image === null ?
-          null :
-          <TouchableOpacity style={styles.newPic} onPress={() => this.getTextFromImage()}>
-            <Text>Extract Text From Photo</Text>
+            <Text style={styles.buttonText}> | </Text>
+          <TouchableOpacity style={styles.extractText} onPress={() => this.getTextFromImage()}>
+            <Text style={styles.buttonText}>Extract Text</Text>
           </TouchableOpacity>
+         </View>
         }
+           
         <TouchableOpacity style={[styles.button, styles.left]} onPress={() => this.setState({ flashEnabled: !this.state.flashEnabled })}>
-          <Text>📸 Flash</Text>
+        {this.state.flashEnabled ?
+                <Image style={{}} source={require('./img/flashOn.png')} />
+                : <Image style={{}} source={require('./img/flashOff.png')} />}
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.right]} onPress={() => this.setState({ useFrontCam: !this.state.useFrontCam })}>
-          <Text>📸 Front Cam</Text>
+          <Image style={{}} source={require('./img/cameraFlipIcon.png')} />
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -121,20 +193,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   newPic: {
-    height: 100,
+    flex:1,
+    height: 70,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor:'#c6535b'
+  },
+  extractText: {
+    flex:1,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:'#c6535b'
+  },
+  buttonText:{
+    fontSize:24,
+    color:'#F5F5F5'
   },
   button: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
-    top: 20,
-    bottom: 20,
+    top:10,
     height: 40,
-    width: 120,
-    backgroundColor: '#FFF',
+    width: 50,
   },
   left: {
     left: 20,
@@ -154,9 +236,18 @@ const styles = StyleSheet.create({
   },
   scanner: {
     flex: 1,
-    width: 400,
-    height: 200,
+    width: width,
+    height: height,
     borderColor: 'orange',
     borderWidth: 1
-  }
+  },
+  activityIndicator: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      position:'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+   }
 });

@@ -33,7 +33,11 @@ const styles = StyleSheet.create({
       right: 0,
       top: 0,
       bottom: 0,
-   }  
+   },
+   Icon:{
+       fontSize:14,
+       color:'#F5F5F5',
+   },    
 });
 
 export default class Home extends Component {
@@ -47,35 +51,46 @@ export default class Home extends Component {
        this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
    }
    resetTo(route) {
+    console.log('Route ', route);   
     const navigateAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: route })],
     });
     this.props.navigation.dispatch(navigateAction);
   }  
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = ({navigation, styles}) => ({
         title: 'Home',
         headerStyle: {
             backgroundColor: '#c6535b',
         },
+        headerLayoutPreset: 'center',
         headerTintColor: '#fff',
         headerTitleStyle: {
             fontWeight: 'bold',
             fontSize:20,
         },
         headerRight: (
-            <Icon name='sign-out' 
-                  type='font-awesome' 
-                  containerStyle={styles.menuIcon} 
+            <Icon name='camera' 
+                  type='font-awesome'
+                  containerStyle={{paddingRight:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
                   onPress={() =>{
                                  AsyncStorage.removeItem('user');
-                                 navigation.state.params.resetTo('Home');
+                                 navigation.state.params.resetTo('Scanner');
                                 }}
             />
         ),
-       /*headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
+       headerLeft: (
+            <Icon name='sign-out' 
+                  type='font-awesome'
+                  containerStyle={{paddingLeft:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() =>{
+                                 AsyncStorage.removeItem('user');
+                                 navigation.state.params.resetTo('Login');
+                                }}
+            />
+        ),
       })    
   openActivityIndicator(){
      this.setState({isLoading:true});

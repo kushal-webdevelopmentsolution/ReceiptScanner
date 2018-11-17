@@ -8,107 +8,14 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, AsyncStorage} from 'react-native';
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import Login from './components/login.js';
-import Signup from './components/signup.js';
-import Home from './components/Home.js';
-import CameraScanner from './components/Scanner.js';
-import DocumentScanner from './components/DocumentScanner.js';
-import ViewReceiptDetail from './components/ViewReceiptDetail.js';
-import BottomToolBar from './components/BottomToolBar.js';
-
-const HomeTab = createStackNavigator({
-    Home:{
-      screen:Home,
-      navigationOptions:() => ({
-        title: 'Home',
-        headerStyle: {
-            backgroundColor: '#c6535b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:20,
-        },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-        ),
-        headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
-      })
-    },
-    Scanner: {
-      screen:DocumentScanner,
-      navigationOptions:() => ({
-        title: 'Scanner',
-        headerStyle: {
-            backgroundColor: '#c6535b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:20,
-        },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-        ),
-        headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
-      })
-    },
-  },
-  {
-    initialRouteName: 'Signup',
-  }
-);
-
-const DocumentScannerTab = createStackNavigator({
-    Scanner: {
-      screen:DocumentScanner,
-      navigationOptions:() => ({
-        title: 'Scanner',
-        headerStyle: {
-            backgroundColor: '#c6535b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:20,
-        },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-        ),
-        headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
-      })
-    },
-    View: {
-      screen:ViewReceiptDetail,
-      navigationOptions:() => ({
-        title: 'View',
-        headerStyle: {
-            backgroundColor: '#c6535b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:20,
-        },
-        /*headerRight: (
-            <Icon name='plus' type='font-awesome' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} />
-        ),
-        headerLeft: (
-            <Icon name='menu' containerStyle={styles.menuIcon} onPress={() => console.log('hello')} /> 
-        ),*/
-      })
-    } 
-  });
-
-const AppNavigation = createBottomTabNavigator({
+import Login from './login.js';
+import Signup from './signup.js';
+import Home from './Home.js';
+import DocumentScanner from './DocumentScanner.js';
+import ViewReceiptDetail from './ViewReceiptDetail.js';
+/*const TabNavigation = createBottomTabNavigator({
   Home: {
     screen: HomeTab
   },
@@ -131,82 +38,100 @@ const AppNavigation = createBottomTabNavigator({
     },
     }
   }
-)
+)*/
 
-const SignupTab = createStackNavigator({
-     Signup:{
-      screen:Signup,  
-    },
+const AppNavigation = createStackNavigator({
     Home:{
-      screen:AppNavigation,  
+        screen:Home
+    },
+    Scanner:{
+        screen:DocumentScanner
+    },
+    View: {
+      screen:ViewReceiptDetail
     }
-});
-const LoginTab = createStackNavigator({
+})
+
+const LoginNavigation = createStackNavigator({
     Login:{
-      screen:Login,  
+      screen:Login,
+      navigationOptions:() => ({
+        header:null
+      })  
+    },
+    Signup:{
+      screen:Signup,
+      navigationOptions:() => ({
+        header:null
+      }) 
     },
     Home:{
-      screen:AppNavigation,  
+      screen:AppNavigation,
+      navigationOptions:() => ({
+        header:null
+      }) 
     }
-},
-{
-    initialRouteName: 'Login',
 });
 
-const LoginNavigation = createBottomTabNavigator({
-  Login:{
-    screen:LoginTab
-  },    
-  Signup: {
-    screen: SignupTab
-  }
-},{
-  tabBarOptions: { 
-  activeTintColor: '#FFFFFF',
-  inactiveTintColor: '#000',      
-    labelStyle: {
-      fontSize: 18,
-      fontWeight:'bold',
-    },
-    style: {
-      backgroundColor: '#c6535b',
-      color: '#000',
-
-    },
-    }
-  }
-)
-
-export default class Navigation extends Component {
-  
-  constructor(props) {
-    super(props);
-    this.isLogged = this.isLogged.bind(this);  
-    console.log("Login ",this.isLogged);
-  }
+export default class Navigations extends Component {
     
-   async isLogged(){
-    try {
-        const value = await AsyncStorage.getItem('@isLoggedIn');
-        if (value !== null) {
-            return value;
-        }else{
-            return false;
-        }
-     } catch (error) {
-        // Error retrieving data
-     }
+  constructor(props){
+      super(props);
+      this.state={
+          isLoggedin:false,
+      }
+      this.view = this.view.bind(this);
+      this.renderView = this.renderView.bind(this);
   }
- 
+  async view (){
+         var details =  await AsyncStorage.getItem('user').then(function(user){
+             if(user !== null){
+                return JSON.parse(user)
+             }else{
+                 return false;
+             }
+         })
+         console.log('Details ',details);
+         if(!details){
+             this.setState({isLoggedin: false });
+         }else{
+             if(details.isLoggedin === 'true'){
+                this.setState({isLoggedin: true });
+            }
+         }
+      return details.isLoggedin;
+  }
+      
+  componentWillMount(){
+  }  
+  async componentDidMount() {
+    const renderComponent = await this.view();
+  }
+  
+  renderView() {
+    if(!this.renderComponent){
+        return <LoginNavigation style={styles.appView}/>;
+    }else{
+        return <AppNavigation style={styles.appView}/>;
+    }
+  };    
   render() {
-    return (
-         {this.isLogged ? <LoginNavigation style={styles.appView}/> : <LoginNavigation style={styles.appView}/>}
+     
+     return (
+       <SafeAreaView style={styles.pageView} forceInset={{bottom:'never' }}>      
+        {this.renderView()}
+       </SafeAreaView>
     )
   }
 }
 
 const styles = StyleSheet.create({
+   pageView: {
+    flex: 1,
+    backgroundColor:'#c6535b',
+    color:'#FFFFFF'   
+  },
   appView:{
-    flex:1
+    flex:1,  
   },
 });

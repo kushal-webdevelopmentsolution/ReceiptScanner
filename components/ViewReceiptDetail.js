@@ -5,24 +5,28 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  View,       
+  Dimensions
 } from 'react-native';
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
-
+const {width, height} = Dimensions.get('window');
 export default class ViewReceiptDetail extends Component {
   constructor(props) {
     super(props);
+    this.state={
+        lines:this.props.navigation.state.params.details
+    }
+    console.log("Broken Lines ",this.state.lines.split('↵'));  
   }
-
+  
   render() {
-    const details = this.props.navigation.state.params.details;
-    console.log("Details ", this.props.navigation.state.params.details);
     return (
-            <ScrollView style={styles.container}>
-                <Text>{details.toString()}</Text>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={{}}>{this.state.lines}</Text>
             </ScrollView>
     );
   }
@@ -34,6 +38,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#F5F5F5',
   },    
   container: {
-    flex: 1,
-  }
+  },
+  receiptContent:{
+    textAlign: 'center', 
+    fontWeight: 'bold',
+    fontSize: 18,   
+  }    
 });

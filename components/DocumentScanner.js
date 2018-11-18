@@ -9,16 +9,20 @@ import {
   ScrollView,    
   ActivityIndicator,
   AsyncStorage,
-  Dimensions
+  Dimensions,
+  Alert    
 } from 'react-native';
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
+import ScaledImage from 'react-native-scaled-image';
 import {saveImages,sendImage,imgToText} from '../services/ImagesService.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
 import AppStatusBar from './AppStatusBar.js';
-let {width, height} = Dimensions.get('window')
+
+const {width, height} = Dimensions.get('window');
+const imgScrollViewHeight = height - 200; 
 export default class DocumentScanner extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +31,7 @@ export default class DocumentScanner extends Component {
       flashEnabled: false,
       useFrontCam: false,
       isLoading:false,
+      imgHeight:height - 150       
     };
       this.resetTo = this.resetTo.bind(this);
        this.openActivityIndicator = this.openActivityIndicator.bind(this);
@@ -80,14 +85,13 @@ export default class DocumentScanner extends Component {
   closeActivityIndicator(){
       this.setState({isLoading:false});
   }
-  componentWillMount() {
-      console.log(width);
+  componentWillMount() {   
       this.openActivityIndicator();
       const navigation = this.props.naviation;
   }
   componentDidMount() {
       this.closeActivityIndicator();
-      this.props.navigation.setParams({ resetTo: this.resetTo });    
+      this.props.navigation.setParams({ resetTo: this.resetTo });
   }
   renderDetectionType() {
     switch (this.state.lastDetectionType) {
@@ -102,8 +106,10 @@ export default class DocumentScanner extends Component {
     }
   }
   
-  getTextFromImage(){
-      var ocrData = new FormData();
+  async getTextFromImage(){
+    this.openActivityIndicator();
+      
+      var ocrData = new FormData();    
           ocrData.append("base64Image",'data:image/jpeg;base64,' + this.state.image );
           ocrData.append("filetype"   , "JPG");
           ocrData.append("language"   , "eng");
@@ -113,70 +119,87 @@ export default class DocumentScanner extends Component {
           ocrData.append("detectOrientation",true);
           ocrData.append("isTable",true);
       
-      imgToText(ocrData).then(res => {
-            var Data = JSON.parse(res._bodyText);
-            this.props.navigation.navigate('View',{
-                details:Data.ParsedResults[0].ParsedText
-            });
-        })
+      var imageText = await imgToText(ocrData).then(res => {
+            var resBody = JSON.parse(res._bodyText);
+            var imgtext = "";
+            console.log("resBody ",resBody);
+            if(resBody.ParsedResults[0].ErrorMessage === ""){
+              imgtext = resBody.ParsedResults[0].ParsedText;
+            }else{
+              imgtext = "";   
+            }
+            return imgtext;
+      })
+      console.log("ImageText ",imageText);
+      if(imageText === ""){
+          Alert.alert('Error occured, please try again later!!');
+      }else{
+          this.closeActivityIndicator();   
+          this.props.navigation.navigate('View',{
+            details:imageText
+          });
+      }
   }    
 
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
         <ActivityIndicator 
                     style={styles.activityIndicator}
                     animating={this.state.isLoading}
                     size="large"
                     color="#c6535b" />  
         {this.state.image ? 
-          <View style={{flex:1,borderWidth:1,width:width,height:height}}>    
-                <Image style={{ flex: 1,width:width, height:height,resizeMode:'contain' }} 
-                 source={{ uri: this.state.image}} /> 
+        
+         <View style={{flex:1}}>
+                <ScrollView style={styles.imageView}>    
+                    <ScaledImage style={{width:width,height:this.state.imgHeight,resizeMode:'contain'}} source={{ uri:`data:image/jpeg;base64,${this.state.image}`}} />
+                </ScrollView>
+                <View style={styles.reTakeBtn}>
+                    <TouchableOpacity style={styles.newPic} onPress={() => this.setState({ image: "" })}>
+                        <Text style={styles.buttonText}>Retake</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.extractText} onPress={() => this.getTextFromImage()}>
+                        <Text style={styles.buttonText}>Extract Text</Text>
+                    </TouchableOpacity>
+                </View>
           </View>:
-          <Scanner
-             onPictureTaken={data => this.setState({ image: data.croppedImage })}
-            overlayColor="rgba(255,130,0, 0.7)"
-            enableTorch={this.state.flashEnabled}
-            useFrontCam={this.state.useFrontCam}
-            brightness={0.2}
-            saturation={0}
-            quality={1}
-            contrast={1.2}
-            onRectangleDetect={({ stableCounter, lastDetectionType }) => this.setState({ stableCounter, lastDetectionType })}
-            detectionCountBeforeCapture={10}
-            detectionRefreshRateInMS={50}
-            style={styles.scanner}
-          />
+
+          <View style={{flex:1}}>
+                <Scanner
+                    useBase64
+                    onPictureTaken={data => this.setState({ image: data.croppedImage })}
+                    overlayColor="rgba(255,130,0, 0.7)"
+                    enableTorch={this.state.flashEnabled}
+                    useFrontCam={this.state.useFrontCam}
+                    brightness={0.2}
+                    saturation={0}
+                    quality={0.9}
+                    contrast={1.2}
+                    onRectangleDetect={({ stableCounter, lastDetectionType }) => this.setState({ stableCounter, lastDetectionType })}
+                    detectionCountBeforeCapture={10}
+                    detectionRefreshRateInMS={50}
+                    style={styles.scanner}
+                />
+                <View style={{height:55}}>    
+                    <Text style={styles.instructions}>
+                        ({this.state.stableCounter || 0} correctly formated rectangle detected
+                    </Text>
+                    <Text style={styles.instructions}>
+                        {this.renderDetectionType()}
+                    </Text>
+                </View>
+                <TouchableOpacity style={[styles.button, styles.left]} onPress={() => this.setState({ flashEnabled: !this.state.flashEnabled })}>
+                    {this.state.flashEnabled ?
+                        <Image style={{}} source={require('./img/flashOn.png')} />
+                        : <Image style={{}} source={require('./img/flashOff.png')} />}
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.right]} onPress={() => this.setState({ useFrontCam:     !this.state.useFrontCam })}>
+                    <Image style={{}} source={require('./img/cameraFlipIcon.png')} />
+                </TouchableOpacity>
+          </View>  
         }
-        <Text style={styles.instructions}>
-          ({this.state.stableCounter || 0} correctly formated rectangle detected
-        </Text>
-        <Text style={styles.instructions}>
-          {this.renderDetectionType()}
-        </Text>
-        {this.state.image === null ?
-          null :
-          <View style={{flex: 2, flexDirection: 'row', marginLeft:10, marginRight:10}}>
-          <TouchableOpacity style={styles.newPic} onPress={() => this.setState({ image: "" })}>
-            <Text style={styles.buttonText}>Retake</Text>
-          </TouchableOpacity>
-            <Text style={styles.buttonText}> | </Text>
-          <TouchableOpacity style={styles.extractText} onPress={() => this.getTextFromImage()}>
-            <Text style={styles.buttonText}>Extract Text</Text>
-          </TouchableOpacity>
-         </View>
-        }
-           
-        <TouchableOpacity style={[styles.button, styles.left]} onPress={() => this.setState({ flashEnabled: !this.state.flashEnabled })}>
-        {this.state.flashEnabled ?
-                <Image style={{}} source={require('./img/flashOn.png')} />
-                : <Image style={{}} source={require('./img/flashOff.png')} />}
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.right]} onPress={() => this.setState({ useFrontCam: !this.state.useFrontCam })}>
-          <Image style={{}} source={require('./img/cameraFlipIcon.png')} />
-        </TouchableOpacity>
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -204,7 +227,9 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:'#c6535b'
+    backgroundColor:'#c6535b',
+    borderLeftWidth:2,
+    borderLeftColor:'#F5F5F5'  
   },
   buttonText:{
     fontSize:24,
@@ -249,5 +274,16 @@ const styles = StyleSheet.create({
       right: 0,
       top: 0,
       bottom: 0,
-   }
+   },
+   imageView:{   
+   },
+   reTakeBtn:{
+       flex: 2,
+       flexDirection: 'row',
+       height:70,
+       position:'absolute',
+       left: 0,
+       right: 0,
+       bottom: 0
+   }    
 });

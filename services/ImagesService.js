@@ -44,7 +44,7 @@ export const sendImage = (images) => {
 }
 
 export const imgToText = (images) => {
-    const URL = `http://api.ocr.space/parse/image`;
+    const URL = `https://api.ocr.space/parse/image`;
     return fetch(URL, {
                 method: 'POST',
                 headers: {
@@ -52,7 +52,7 @@ export const imgToText = (images) => {
                     'Content-Type': 'multipart/form-data',
                 },
                 body: images,
-            })//.then((response) => response.json())
+            })
             .then((responseJson) => {
                 console.log(JSON.parse(responseJson._bodyText));
                 return responseJson;

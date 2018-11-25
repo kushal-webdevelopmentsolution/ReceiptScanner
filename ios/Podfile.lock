@@ -1,16 +1,25 @@
 PODS:
-  - TesseractOCRiOS (4.0.0)
+  - React (0.11.0):
+    - React/Core (= 0.11.0)
+  - React/Core (0.11.0)
+  - RNPDF (0.5.6):
+    - React
 
 DEPENDENCIES:
-  - TesseractOCRiOS (= 4.0.0)
+  - RNPDF (from `../node_modules/react-native-view-pdf`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - TesseractOCRiOS
+    - React
+
+EXTERNAL SOURCES:
+  RNPDF:
+    :path: "../node_modules/react-native-view-pdf"
 
 SPEC CHECKSUMS:
-  TesseractOCRiOS: 90638afbe43d082433f2e76b384c7901d23956df
+  React: ab1a2e21deb34965c38328d5ec40cc7d12c6050a
+  RNPDF: f27f11d7dbbb49da65375c401eca73b7ef1d7b00
 
-PODFILE CHECKSUM: c432959361de78defd74569411cbf9b261fb14e9
+PODFILE CHECKSUM: 4d576734abaf5c97443ba3b92b4003512d3eb5f5
 
 COCOAPODS: 1.5.3

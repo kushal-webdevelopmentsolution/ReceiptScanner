@@ -3,6 +3,8 @@ package com.receiptscanner;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rumax.reactnative.pdfviewer.PDFViewPackage;
+import com.anyline.RNImageToPDF.RNImageToPdfPackage;
 import com.reactlibrary.RNPdfScannerPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -27,6 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PDFViewPackage(),
+            new RNImageToPdfPackage(),
             new RNPdfScannerPackage(),
             new RNCameraPackage(),
             new VectorIconsPackage(),

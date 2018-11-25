@@ -24,6 +24,26 @@ export const saveImages = (images) => {
             });
 }
 
+export const getImages = (user) => {
+    const URL = `${domain}/getimages`;
+    return fetch(URL, {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: user,
+            })
+            .then((responseJson) => {
+                console.log("responseJson ",responseJson);
+                return responseJson;
+            })
+            .catch((error) => {
+                Alert.alert(`Error: ${JSON.stringify(error)}`);
+            });
+}
+
 export const sendImage = (images) => {
     const URL = `${domain}/detectTextFromImage`;
     return fetch(URL, {

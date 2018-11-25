@@ -3,11 +3,12 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,ScrollView, StatusBar,ActivityIndicator,AsyncStorage} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
-import { Icon } from 'react-native-elements';
+import { Icon,List,ListItem } from 'react-native-elements';
 import AppStatusBar from './AppStatusBar.js';
 import CameraScanner from './Scanner.js';
 import DocumentScanner from './DocumentScanner.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
+import {getImages} from '../services/ImagesService.js';
 
 
 const instructions = Platform.select({
@@ -44,14 +45,15 @@ export default class Home extends Component {
    constructor(props){
        super(props);
        this.state={
-         isLoading:false
+         isLoading:false,
+         images:[],   
        }
        this.resetTo = this.resetTo.bind(this);
        this.openActivityIndicator = this.openActivityIndicator.bind(this);
        this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+       this.retriveImages = this.retriveImages.bind(this);
    }
-   resetTo(route) {
-    console.log('Route ', route);   
+   resetTo(route) { 
     const navigateAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: route })],
@@ -75,7 +77,6 @@ export default class Home extends Component {
                   containerStyle={{paddingRight:20}} 
                   iconStyle={{fontSize:28,color:'#F5F5F5'}} 
                   onPress={() =>{
-                                 AsyncStorage.removeItem('user');
                                  navigation.state.params.resetTo('Scanner');
                                 }}
             />
@@ -101,16 +102,28 @@ export default class Home extends Component {
   componentWillMount() {
       this.openActivityIndicator();
       const navigation = this.props.naviation;
+      this.retriveImages();
   }
-  /*componentWillUpdate(){
-      this.openActivityIndicator();
-  }*/
+  componentWillUpdate(){
+      
+  }
   componentDidUpdate(){
       
   }
   componentDidMount() {
       this.closeActivityIndicator();
       this.props.navigation.setParams({ resetTo: this.resetTo });    
+  }
+
+  async retriveImages(){
+     const userId = await AsyncStorage.getItem('user').then((user)=>{
+          return {userId:JSON.parse(user).id};
+      }) 
+      const imageslist = await getImages(JSON.stringify(userId)).then(function(img){
+        return img;
+      })
+      var images = JSON.parse(imageslist._bodyText).rows;
+      this.setState({images:images});
   }
   render() {
     return (
@@ -120,7 +133,18 @@ export default class Home extends Component {
                     animating={this.state.isLoading}
                     size="large"
                     color="#c6535b" />
-            <Text> {instructions} </Text>
+            <List containerStyle={{marginBottom: 20}}>
+                {
+                    this.state.images.map((l) => (
+                        <ListItem
+                            roundAvatar
+                            avatar={{uri:`data:image/jpeg;base64,${l.image}`}}
+                            key={l.id}
+                            title={'First Image'}
+                        />
+                    ))
+                }
+            </List>
         </ScrollView>
     );
   }

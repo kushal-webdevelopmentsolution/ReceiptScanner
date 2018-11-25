@@ -17,6 +17,7 @@ import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActi
 import { Icon } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
 import ScaledImage from 'react-native-scaled-image';
+import RNImageToPdf from 'react-native-image-to-pdf';
 import {saveImages,sendImage,imgToText} from '../services/ImagesService.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
 import AppStatusBar from './AppStatusBar.js';
@@ -31,7 +32,8 @@ export default class DocumentScanner extends Component {
       flashEnabled: false,
       useFrontCam: false,
       isLoading:false,
-      imgHeight:height - 150       
+      imgHeight:height - 150,
+      user:null,    
     };
       this.resetTo = this.resetTo.bind(this);
        this.openActivityIndicator = this.openActivityIndicator.bind(this);
@@ -62,7 +64,6 @@ export default class DocumentScanner extends Component {
                   containerStyle={{paddingRight:20}} 
                   iconStyle={{fontSize:28,color:'#F5F5F5'}} 
                   onPress={() =>{
-                                 AsyncStorage.removeItem('user');
                                  navigation.state.params.resetTo('Home');
                                 }}
             />
@@ -85,9 +86,13 @@ export default class DocumentScanner extends Component {
   closeActivityIndicator(){
       this.setState({isLoading:false});
   }
-  componentWillMount() {   
+  async componentWillMount() {   
       this.openActivityIndicator();
       const navigation = this.props.naviation;
+      const loggedInUser = await AsyncStorage.getItem('user').then(function(user){
+             return JSON.parse(user);
+      })
+      this.setState({user:loggedInUser});
   }
   componentDidMount() {
       this.closeActivityIndicator();
@@ -108,7 +113,6 @@ export default class DocumentScanner extends Component {
   
   async getTextFromImage(){
     this.openActivityIndicator();
-      
       var ocrData = new FormData();    
           ocrData.append("base64Image",'data:image/jpeg;base64,' + this.state.image );
           ocrData.append("filetype"   , "JPG");
@@ -134,10 +138,21 @@ export default class DocumentScanner extends Component {
       if(imageText === ""){
           Alert.alert('Error occured, please try again later!!');
       }else{
-          this.closeActivityIndicator();   
-          this.props.navigation.navigate('View',{
-            details:imageText
-          });
+          this.closeActivityIndicator();
+           if(this.state.user.id){       
+                var images = {};
+                images.userId = this.state.user.id;
+                images.image = this.state.image;
+                images.imageText = imageText;
+                images.pdf_url = null; 
+                console.log("Images ",images);
+                saveImages(JSON.stringify(images));
+              /*this.props.navigation.navigate('View',{
+                    details:imageText
+                });*/
+             }else{
+                 Alert.alert('Session Timedout !!');
+             } 
       }
   }    
 
@@ -172,7 +187,7 @@ export default class DocumentScanner extends Component {
                     overlayColor="rgba(255,130,0, 0.7)"
                     enableTorch={this.state.flashEnabled}
                     useFrontCam={this.state.useFrontCam}
-                    brightness={0.2}
+                    brightness={0.4}
                     saturation={0}
                     quality={0.9}
                     contrast={1.2}

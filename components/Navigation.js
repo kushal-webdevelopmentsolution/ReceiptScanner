@@ -49,7 +49,13 @@ const AppNavigation = createStackNavigator({
     },
     View: {
       screen:ViewReceiptDetail
-    }
+    },
+    Login:{
+      screen:Login,
+      navigationOptions:() => ({
+        header:null
+      })  
+    },
 })
 
 const LoginNavigation = createStackNavigator({

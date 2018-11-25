@@ -18,15 +18,17 @@ export default class ViewReceiptDetail extends Component {
   constructor(props) {
     super(props);
     this.state={
-        lines:this.props.navigation.state.params.details
+        lines:this.props.navigation.state.params.details.split('\n')
     }
-    console.log("Broken Lines ",this.state.lines.split('↵'));  
+    console.log("Broken Lines ",this.state.lines);  
   }
   
   render() {
     return (
             <ScrollView contentContainerStyle={styles.container}>
-                <Text style={{}}>{this.state.lines}</Text>
+                {this.state.lines.map(function(line){
+                   return (<Text style={styles.receiptContent}>{line}</Text>)
+                })}
             </ScrollView>
     );
   }
@@ -40,7 +42,8 @@ const styles = StyleSheet.create({
   container: {
   },
   receiptContent:{
-    textAlign: 'center', 
+    paddingLeft:40,
+    paddingRight:40,  
     fontWeight: 'bold',
     fontSize: 18,   
   }    

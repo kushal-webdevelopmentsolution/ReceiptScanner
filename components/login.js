@@ -111,6 +111,10 @@ export default class Login extends Component {
       }else{
           authorize.rows[0].isLoggedin='true';
           var setUser = await AsyncStorage.setItem('user', JSON.stringify(authorize.rows[0]));
+          AsyncStorage.getItem('user').then((user) => {
+            console.log("User ",user);
+          });
+          console.log("setUser ", authorize.rows[0]);
           this.resetTo('Home');
       }
   } 

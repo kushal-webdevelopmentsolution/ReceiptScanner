@@ -31,6 +31,7 @@
 		29118D7F2196528F0029F303 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 29118D7E2196528F0029F303 /* tessdata */; };
 		293FB6022198BCBE0012ECF4 /* libRNPdfScanner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 293FB6012198B4090012ECF4 /* libRNPdfScanner.a */; };
 		293FB67021991CAE0012ECF4 /* AppIcon.appiconset in Resources */ = {isa = PBXBuildFile; fileRef = 293FB64421991CAE0012ECF4 /* AppIcon.appiconset */; };
+		29F4959C21A38FE500B20A9C /* libReactNativeViewPDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F4959421A38FD800B20A9C /* libReactNativeViewPDF.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -45,6 +46,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* ReceiptScannerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ReceiptScannerTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2E8A8EEDEABB4F0BA3990416 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 572CAC95DB1846B8AC5E095E /* Zocial.ttf */; };
+		2E8EEDD0A5D04D038C45C44F /* libRNImageToPdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CC6307339724A26AC5CFF18 /* libRNImageToPdf.a */; };
 		52F860A2CAD64E8EA503976C /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB1E390996114397B6857030 /* Entypo.ttf */; };
 		5B012951F29A4B9590B3BF43 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 32A6D319CFF34D759D20E563 /* Foundation.ttf */; };
 		5B0A82546BDF4896A1C26BE2 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 212A95982EFC4371A2DACD48 /* EvilIcons.ttf */; };
@@ -167,6 +169,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = A39873CE1EA65EE60051E01A;
 			remoteInfo = "RNVectorIcons-tvOS";
+		};
+		29F4944D21A34D7600B20A9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EF1F01EE55334CAD8B5C5930 /* RNImageToPdf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNImageToPdf;
+		};
+		29F4959321A38FD800B20A9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29F4956A21A38FD800B20A9C /* ReactNativeViewPDF.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5318AA072052B7FC009FB5F2;
+			remoteInfo = ReactNativeViewPDF;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -411,6 +427,7 @@
 		29118DBD21965E0E0029F303 /* libtesseract_all.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtesseract_all.a; path = "../node_modules/react-native-text-detector/ios/Pods/TesseractOCRiOS/TesseractOCR/lib/libtesseract_all.a"; sourceTree = "<group>"; };
 		293FB64421991CAE0012ECF4 /* AppIcon.appiconset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppIcon.appiconset; sourceTree = "<group>"; };
 		295B8BB22197CA770013B097 /* libPods-RNTextDetector.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-RNTextDetector.a"; path = "DerivedData/ReceiptScanner/Build/Products/Debug-iphoneos/libPods-RNTextDetector.a"; sourceTree = "<group>"; };
+		29F4956A21A38FD800B20A9C /* ReactNativeViewPDF.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeViewPDF.xcodeproj; path = "../node_modules/react-native-view-pdf/ReactNativeViewPDF.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* ReceiptScanner-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ReceiptScanner-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* ReceiptScanner-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ReceiptScanner-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -418,6 +435,7 @@
 		3417A82287934EC1B85D7E6E /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		3B1D0CAD1D7E4367A92A0946 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		572CAC95DB1846B8AC5E095E /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		5CC6307339724A26AC5CFF18 /* libRNImageToPdf.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImageToPdf.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		66E854DE46A24376A885FF10 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		6A0C953450524840A5A54DEF /* RNPdfScanner.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNPdfScanner.xcodeproj; path = "../node_modules/react-native-document-scanner/ios/RNPdfScanner.xcodeproj"; sourceTree = "<group>"; };
@@ -434,6 +452,7 @@
 		CB1E390996114397B6857030 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		D12D5A60F0974518B47D1E74 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		E526A0A009554FBC9F95762D /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		EF1F01EE55334CAD8B5C5930 /* RNImageToPdf.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImageToPdf.xcodeproj; path = "../node_modules/react-native-image-to-pdf/ios/RNImageToPdf.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +484,8 @@
 				2904CE0321977A7A00EAD62A /* libRNCamera.a in Frameworks */,
 				18748500D5F040098B1AE6AA /* libRNFS.a in Frameworks */,
 				17830DD169194459899E1B3E /* libRNVectorIcons.a in Frameworks */,
+				2E8EEDD0A5D04D038C45C44F /* libRNImageToPdf.a in Frameworks */,
+				29F4959C21A38FE500B20A9C /* libReactNativeViewPDF.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,6 +679,7 @@
 				D12D5A60F0974518B47D1E74 /* libRNVectorIcons.a */,
 				0B1C59067AAF4387B01DE9C7 /* libRNVectorIcons-tvOS.a */,
 				26A6D61B3F7D4E28808773FF /* libRNPdfScanner.a */,
+				5CC6307339724A26AC5CFF18 /* libRNImageToPdf.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -676,6 +698,22 @@
 			children = (
 				29EEC98B219547870067C150 /* libRNVectorIcons.a */,
 				29EEC98D219547870067C150 /* libRNVectorIcons-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29F4944A21A34D7600B20A9C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29F4944E21A34D7600B20A9C /* libRNImageToPdf.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29F4956B21A38FD800B20A9C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29F4959421A38FD800B20A9C /* libReactNativeViewPDF.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -711,6 +749,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				29F4956A21A38FD800B20A9C /* ReactNativeViewPDF.xcodeproj */,
 				2904CDD1219779F500EAD62A /* RNCamera.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -727,6 +766,7 @@
 				01076AC6FD704510BE905914 /* RNFS.xcodeproj */,
 				3B1D0CAD1D7E4367A92A0946 /* RNVectorIcons.xcodeproj */,
 				6A0C953450524840A5A54DEF /* RNPdfScanner.xcodeproj */,
+				EF1F01EE55334CAD8B5C5930 /* RNImageToPdf.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -940,12 +980,20 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 29F4956B21A38FD800B20A9C /* Products */;
+					ProjectRef = 29F4956A21A38FD800B20A9C /* ReactNativeViewPDF.xcodeproj */;
+				},
+				{
 					ProductGroup = 2904CDD2219779F500EAD62A /* Products */;
 					ProjectRef = 2904CDD1219779F500EAD62A /* RNCamera.xcodeproj */;
 				},
 				{
 					ProductGroup = 29EEC96E219547870067C150 /* Products */;
 					ProjectRef = 01076AC6FD704510BE905914 /* RNFS.xcodeproj */;
+				},
+				{
+					ProductGroup = 29F4944A21A34D7600B20A9C /* Products */;
+					ProjectRef = EF1F01EE55334CAD8B5C5930 /* RNImageToPdf.xcodeproj */;
 				},
 				{
 					ProductGroup = 293FB5FD2198B4090012ECF4 /* Products */;
@@ -1063,6 +1111,20 @@
 			fileType = archive.ar;
 			path = "libRNVectorIcons-tvOS.a";
 			remoteRef = 29EEC98C219547870067C150 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		29F4944E21A34D7600B20A9C /* libRNImageToPdf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImageToPdf.a;
+			remoteRef = 29F4944D21A34D7600B20A9C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		29F4959421A38FD800B20A9C /* libReactNativeViewPDF.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeViewPDF.a;
+			remoteRef = 29F4959321A38FD800B20A9C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */ = {
@@ -1430,8 +1492,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = ReceiptScannerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1459,8 +1521,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = ReceiptScannerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1490,8 +1552,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = ReceiptScanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1520,8 +1582,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = ReceiptScanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1555,8 +1617,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = "ReceiptScanner-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1591,8 +1653,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = "ReceiptScanner-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1626,8 +1688,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = "ReceiptScanner-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1661,8 +1723,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-detector/ios",
-					"$(SRCROOT)/../node_modules/react-native-tesseract-ocr/ios",
 					"$(SRCROOT)/../node_modules/react-native-document-scanner/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-image-to-pdf/ios",
 				);
 				INFOPLIST_FILE = "ReceiptScanner-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

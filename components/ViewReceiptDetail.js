@@ -19,15 +19,14 @@ export default class ViewReceiptDetail extends Component {
     super(props);
     this.state={
         lines:this.props.navigation.state.params.details.split('\n')
-    }
-    console.log("Broken Lines ",this.state.lines);  
+    }  
   }
   
   render() {
     return (
             <ScrollView contentContainerStyle={styles.container}>
-                {this.state.lines.map(function(line){
-                   return (<Text style={styles.receiptContent}>{line}</Text>)
+                {this.state.lines.map(function(line,index){
+                   return (<Text key={index} style={styles.receiptContent}>{line}</Text>)
                 })}
             </ScrollView>
     );

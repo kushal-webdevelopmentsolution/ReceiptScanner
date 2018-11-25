@@ -147,9 +147,9 @@ export default class DocumentScanner extends Component {
                 images.pdf_url = null; 
                 console.log("Images ",images);
                 saveImages(JSON.stringify(images));
-              /*this.props.navigation.navigate('View',{
+                this.props.navigation.navigate('View',{
                     details:imageText
-                });*/
+                });
              }else{
                  Alert.alert('Session Timedout !!');
              } 

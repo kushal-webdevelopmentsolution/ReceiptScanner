@@ -52,6 +52,7 @@ export default class Home extends Component {
        this.openActivityIndicator = this.openActivityIndicator.bind(this);
        this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
        this.retriveImages = this.retriveImages.bind(this);
+       this.viewImage = this.viewImage.bind(this);
    }
    resetTo(route) { 
     const navigateAction = StackActions.reset({
@@ -114,6 +115,13 @@ export default class Home extends Component {
       this.closeActivityIndicator();
       this.props.navigation.setParams({ resetTo: this.resetTo });    
   }
+  
+  viewImage(text){
+      console.log("Text ", text);
+      this.props.navigation.navigate('View',{
+            details:text
+      })
+  }
 
   async retriveImages(){
      const userId = await AsyncStorage.getItem('user').then((user)=>{
@@ -141,6 +149,7 @@ export default class Home extends Component {
                             avatar={{uri:`data:image/jpeg;base64,${l.image}`}}
                             key={l.id}
                             title={'First Image'}
+                            onPress={()=>this.viewImage(l.imagetext)}
                         />
                     ))
                 }

@@ -74,10 +74,12 @@ export const imgToText = (images) => {
                 body: images,
             })
             .then((responseJson) => {
+                //Alert.alert(responseJson._bodyText);
                 console.log(JSON.parse(responseJson._bodyText));
                 return responseJson;
             })
             .catch((error) => {
+                Alert.alert("Error "+error);
                 console.log(error);
             });
 }

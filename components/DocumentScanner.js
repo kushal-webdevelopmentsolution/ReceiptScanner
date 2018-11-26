@@ -10,7 +10,9 @@ import {
   ActivityIndicator,
   AsyncStorage,
   Dimensions,
-  Alert    
+  Alert,
+  Modal,
+  TouchableHighlight    
 } from 'react-native';
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
@@ -33,14 +35,15 @@ export default class DocumentScanner extends Component {
       useFrontCam: false,
       isLoading:false,
       imgHeight:height - 150,
-      user:null,    
+      user:null,
+      amountModal:false    
     };
       this.resetTo = this.resetTo.bind(this);
-       this.openActivityIndicator = this.openActivityIndicator.bind(this);
-       this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+      this.openActivityIndicator = this.openActivityIndicator.bind(this);
+      this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
+      this.setAmountModalVisible = this.setAmountModalVisible.bind(this);
    }
    resetTo(route) {
-    console.log('Route ', route);   
     const navigateAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: route })],
@@ -113,6 +116,7 @@ export default class DocumentScanner extends Component {
   
   async getTextFromImage(){
     this.openActivityIndicator();
+      
       var ocrData = new FormData();    
           ocrData.append("base64Image",'data:image/jpeg;base64,' + this.state.image );
           ocrData.append("filetype"   , "JPG");
@@ -126,26 +130,36 @@ export default class DocumentScanner extends Component {
       var imageText = await imgToText(ocrData).then(res => {
             var resBody = JSON.parse(res._bodyText);
             var imgtext = "";
-            console.log("resBody ",resBody);
-            if(resBody.ParsedResults[0].ErrorMessage === ""){
-              imgtext = resBody.ParsedResults[0].ParsedText;
+            if(resBody.isErroredOnProcessing){    
+                 Alert.alert(resBody.ErrorDetails+" Retake Photo Again !!");
             }else{
-              imgtext = "";   
+                console.log("Response Body ",resBody);
+                if(resBody.ParsedResults[0].ErrorMessage === ""){
+                    imgtext = resBody.ParsedResults[0].ParsedText;
+                }else{
+                    imgtext = "";   
+                }
             }
             return imgtext;
       })
-      console.log("ImageText ",imageText);
       if(imageText === ""){
           Alert.alert('Error occured, please try again later!!');
       }else{
           this.closeActivityIndicator();
+           var strArray = imageText.split('\n');
+            strArray.map((str)=>{
+              if(str.includes('Total') || str.includes('Available Balance') || str.includes('Transaction Amount') || str.includes('Amount')){
+                   if(str.match(/[+-]?\d+(?:\.\d+)?/g) === null){
+                       //this.setAmountModalVisible(!this.state.amountModal)
+                   }
+              }   
+            })
            if(this.state.user.id){       
                 var images = {};
                 images.userId = this.state.user.id;
                 images.image = this.state.image;
                 images.imageText = imageText;
                 images.pdf_url = null; 
-                console.log("Images ",images);
                 saveImages(JSON.stringify(images));
                 this.props.navigation.navigate('View',{
                     details:imageText
@@ -154,24 +168,28 @@ export default class DocumentScanner extends Component {
                  Alert.alert('Session Timedout !!');
              } 
       }
-  }    
+  }
+
+  setAmountModalVisible(visible) {
+    this.setState({amountModal: visible});
+  }
 
   render() {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator 
-                    style={styles.activityIndicator}
-                    animating={this.state.isLoading}
-                    size="large"
-                    color="#c6535b" />  
+      <View style={styles.container}>  
         {this.state.image ? 
         
          <View style={{flex:1}}>
                 <ScrollView style={styles.imageView}>    
                     <ScaledImage style={{width:width,height:this.state.imgHeight,resizeMode:'contain'}} source={{ uri:`data:image/jpeg;base64,${this.state.image}`}} />
+                    <ActivityIndicator 
+                    style={styles.activityIndicator}
+                    animating={this.state.isLoading}
+                    size="large"
+                    color="#c6535b" />
                 </ScrollView>
                 <View style={styles.reTakeBtn}>
-                    <TouchableOpacity style={styles.newPic} onPress={() => this.setState({ image: "" })}>
+                    <TouchableOpacity style={styles.newPic} onPress={() => this.setState({ image: "",isLoading:false })}>
                         <Text style={styles.buttonText}>Retake</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.extractText} onPress={() => this.getTextFromImage()}>
@@ -187,10 +205,10 @@ export default class DocumentScanner extends Component {
                     overlayColor="rgba(255,130,0, 0.7)"
                     enableTorch={this.state.flashEnabled}
                     useFrontCam={this.state.useFrontCam}
-                    brightness={0.4}
+                    brightness={0}
                     saturation={0}
                     quality={0.9}
-                    contrast={1.2}
+                    contrast={1.3}
                     onRectangleDetect={({ stableCounter, lastDetectionType }) => this.setState({ stableCounter, lastDetectionType })}
                     detectionCountBeforeCapture={10}
                     detectionRefreshRateInMS={50}
@@ -214,7 +232,28 @@ export default class DocumentScanner extends Component {
                 </TouchableOpacity>
           </View>  
         }
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.amountModal}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{marginTop: 22}}>
+            <View>
+              <Text>Hello World!</Text>
+
+              <TouchableHighlight
+                onPress={() => {
+                  this.setAmountModalVisible(!this.state.amountModal);
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
       </View>
+          
     );
   }
 }
@@ -282,13 +321,13 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   activityIndicator: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      position:'absolute',
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
    },
    imageView:{   
    },

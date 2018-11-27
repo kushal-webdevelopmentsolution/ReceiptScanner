@@ -117,6 +117,7 @@ export default class Home extends Component {
   
   viewImage(text){
       this.openActivityIndicator();
+      console.log("Text ", text);
       this.props.navigation.navigate('View',{
             details:text
       })

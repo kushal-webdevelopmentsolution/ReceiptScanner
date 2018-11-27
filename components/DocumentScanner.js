@@ -145,6 +145,7 @@ export default class DocumentScanner extends Component {
           Alert.alert('Error occured, please try again later!!');
       }else{
           this.closeActivityIndicator();
+           this.setState({imageText:imageText});
            var strArray = imageText.split('\n');
            strArray.map((str)=>{
               if(str.includes('Total') || str.includes('Available Balance') || str.includes('Transaction Amount') || str.includes('Amount')){

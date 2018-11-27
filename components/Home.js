@@ -131,21 +131,18 @@ export default class Home extends Component {
         return img;
       })
       var images = JSON.parse(imageslist._bodyText).rows;
-     
+      
       images.map((img,index)=>{
-          var strArray = img.imagetext.split('\n');
-          strArray.map((str)=>{
-              if(str.includes('Total') || str.includes('Available Balance') || str.includes('Transaction Amount') || str.includes('Amount')){
-                  
+         
+                  console.log(img);
                   images[index].total = <View style={{flex:1, flexDirection:'row'}}>
                     <Text style={{fontSize:18,fontWeight:'bold',color:'#c6535b',textAlign:'left',paddingLeft:10,width:width/2}}>
-                       {strArray[0].split('\t')[0]}
+                       {img.companyname}
                     </Text>
-                    <Text style={{fontSize:18,right:5,fontWeight:'bold',color:'#c6535b',textAlign:'center',width:width/3,alignSelf: 'flex-end'}}>
-                       ${str.match(/[+-]?\d+(?:\.\d+)?/g).map(Number)}
+                    <Text style={{fontSize:18,right:0,left:5,fontWeight:'bold',color:'#c6535b',textAlign:'center',width:width/4,alignSelf: 'flex-end'}}>
+                       ${img.totalamount}
                     </Text></View>
-              }   
-          })
+   
       })
       this.setState({images:images});
       this.closeActivityIndicator();

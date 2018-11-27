@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
-import { Icon } from 'react-native-elements';
+import { Icon,FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
 import ScaledImage from 'react-native-scaled-image';
 import RNImageToPdf from 'react-native-image-to-pdf';
@@ -36,12 +36,16 @@ export default class DocumentScanner extends Component {
       isLoading:false,
       imgHeight:height - 150,
       user:null,
-      amountModal:false    
+      amountModal:false,
+      companyName:null,
+      totalAmount:null,
+      imageText:null    
     };
       this.resetTo = this.resetTo.bind(this);
       this.openActivityIndicator = this.openActivityIndicator.bind(this);
       this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
       this.setAmountModalVisible = this.setAmountModalVisible.bind(this);
+      this.onSubmit = this.onSubmit.bind(this);
    }
    resetTo(route) {
     const navigateAction = StackActions.reset({
@@ -130,15 +134,10 @@ export default class DocumentScanner extends Component {
       var imageText = await imgToText(ocrData).then(res => {
             var resBody = JSON.parse(res._bodyText);
             var imgtext = "";
-            if(resBody.isErroredOnProcessing){    
+            if(resBody.IsErroredOnProcessing){    
                  Alert.alert(resBody.ErrorDetails+" Retake Photo Again !!");
             }else{
-                console.log("Response Body ",resBody);
-                if(resBody.ParsedResults[0].ErrorMessage === ""){
-                    imgtext = resBody.ParsedResults[0].ParsedText;
-                }else{
-                    imgtext = "";   
-                }
+                imgtext = resBody.ParsedResults[0].ParsedText;
             }
             return imgtext;
       })
@@ -147,27 +146,39 @@ export default class DocumentScanner extends Component {
       }else{
           this.closeActivityIndicator();
            var strArray = imageText.split('\n');
-            strArray.map((str)=>{
+           strArray.map((str)=>{
               if(str.includes('Total') || str.includes('Available Balance') || str.includes('Transaction Amount') || str.includes('Amount')){
-                   if(str.match(/[+-]?\d+(?:\.\d+)?/g) === null){
-                       //this.setAmountModalVisible(!this.state.amountModal)
+                   console.log("Amount ",str);
+                   if (str.match(/[+-]?\d+(?:\.\d+)?/g) != null) {
+                        this.setState({companyName:strArray[0]});
+                        this.setState({totalAmount:str.match(/[+-]?\d+(?:\.\d+)?/g)[0]});        
+                        this.setAmountModalVisible(!this.state.amountModal)
+                   }else{
+                       Alert.alert("Oops! Amount not read from Photo, Please Retake Photo");
                    }
+                  
               }   
-            })
-           if(this.state.user.id){       
-                var images = {};
-                images.userId = this.state.user.id;
-                images.image = this.state.image;
-                images.imageText = imageText;
-                images.pdf_url = null; 
-                saveImages(JSON.stringify(images));
-                this.props.navigation.navigate('View',{
-                    details:imageText
-                });
-             }else{
-                 Alert.alert('Session Timedout !!');
-             } 
+           })
+          
       }
+  }
+  onSubmit(){
+      if(this.state.user.id){       
+         var images = {};
+         images.userId = this.state.user.id;
+         images.image = this.state.image;
+         images.imageText = this.state.imageText;
+         images.pdf_url = null;
+         images.companyName = this.state.companyName.trim();
+         images.totalAmount = this.state.totalAmount;
+         console.log("Image Object ", images);      
+         saveImages(JSON.stringify(images));
+         /*this.props.navigation.navigate('View',{
+                    details:imageText
+         });*/
+      }else{
+         Alert.alert('Session Timedout !!');
+      } 
   }
 
   setAmountModalVisible(visible) {
@@ -234,27 +245,37 @@ export default class DocumentScanner extends Component {
         }
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent={false}
+          presentationStyle="pageSheet"
           visible={this.state.amountModal}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{marginTop: 22}}>
-            <View>
-              <Text>Hello World!</Text>
-
-              <TouchableHighlight
-                onPress={() => {
-                  this.setAmountModalVisible(!this.state.amountModal);
-                }}>
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
+          <View style={styles.outerreceiptbox}>
+             <View style={styles.receiptbox}>
+                <FormLabel labelStyle={{color: '#c6535b',fontSize:16}}>Company Name</FormLabel>
+                <FormInput
+                    inputStyle={{color: '#c6535b'}}
+                    placeholder='Company Name'
+                    value={this.state.companyName}
+                    onChangeText={(companyname) => this.setState({companyName:companyname})}/>
+            
+                <FormLabel labelStyle={{color: '#c6535b',fontSize:16}}>Total Amount</FormLabel>
+                <FormInput
+                    inputStyle={{color: '#c6535b'}}
+                    placeholder="Amount"
+                    value={this.state.totalAmount}
+                    onChangeText={(total) => this.setState({totalAmount:total})}/>
+                
+                <View style={{marginTop:22,flex:1,flexDirection: 'row',}}>
+                    <Button buttonStyle={{width:150,height:50,elevation:1}} fontWeight='bold' backgroundColor='#c6535b' onPress={() => this.setAmountModalVisible(!this.state.amountModal)} title="Close" />
+                    <Button buttonStyle={{width:150,height:50,elevation:1}} fontWeight='bold' backgroundColor='#c6535b' onPress={() => this.onSubmit()} title="Submit" />
+                </View>
+             </View>
+         </View>
         </Modal>
-      </View>
-          
-    );
+      </View>     
+    )
   }
 }
 
@@ -339,5 +360,19 @@ const styles = StyleSheet.create({
        left: 0,
        right: 0,
        bottom: 0
-   }    
+  },
+  outerreceiptbox:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    paddingLeft:15,
+    paddingRight:15
+  },
+  receiptbox:{
+    marginLeft:15,
+    marginRight:15,  
+    height: 250,
+    width:width,
+    backgroundColor:'#F5F5F5', 
+  }
 });

@@ -21,6 +21,40 @@ export default class ViewReceiptDetail extends Component {
         lines:this.props.navigation.state.params.details.split('\n')
     }  
   }
+
+  static navigationOptions = ({navigation, styles}) => ({
+        title: 'View',
+        headerStyle: {
+            backgroundColor: '#c6535b',
+        },
+        headerLayoutPreset: 'center',
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize:20,
+        },
+        headerBackTitle:'Back',
+        headerRight: (
+            <Icon name='home' 
+                  type='font-awesome'
+                  containerStyle={{paddingRight:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() =>{
+                                 navigation.state.params.resetTo('Home');
+                                }}
+            />
+        ),
+       headerLeft: (
+                                                    
+            <Icon name='md-arrow-round-back' 
+                  type='ionicon'
+                  containerStyle={{paddingLeft:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() => navigation.goBack()}
+            />
+        ),
+      })    
+      
   
   render() {
     return (

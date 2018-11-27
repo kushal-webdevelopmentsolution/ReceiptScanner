@@ -24,6 +24,25 @@ export const saveImages = (images) => {
             });
 }
 
+export const deleteImage = (imageId) => {
+    const URL = `${domain}/deleteimage`;
+    return fetch(URL, {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: imageId,
+            })//.then((response) => response.json())
+            .then((responseJson) => {
+                return responseJson;
+            })
+            .catch((error) => {
+                Alert.alert(`Error: ${JSON.stringify(error)}`);
+            });
+}
+
 export const getImages = (user) => {
     const URL = `${domain}/getimages`;
     return fetch(URL, {

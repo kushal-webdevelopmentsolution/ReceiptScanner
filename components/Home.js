@@ -1,14 +1,15 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,ScrollView, StatusBar,ActivityIndicator,AsyncStorage,Dimensions} from 'react-native';
+import {Platform, StyleSheet, Text, View,ScrollView, StatusBar,ActivityIndicator,AsyncStorage,Dimensions,Alert} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon,List,ListItem } from 'react-native-elements';
+import Swipeout from 'react-native-swipeout';
 import AppStatusBar from './AppStatusBar.js';
 import CameraScanner from './Scanner.js';
 import DocumentScanner from './DocumentScanner.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
-import {getImages} from '../services/ImagesService.js';
+import {getImages,deleteImage} from '../services/ImagesService.js';
 
 const {width, height} = Dimensions.get('window');
 const instructions = Platform.select({
@@ -53,6 +54,9 @@ export default class Home extends Component {
        this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
        this.retriveImages = this.retriveImages.bind(this);
        this.viewImage = this.viewImage.bind(this);
+       this.deleteImage = this.deleteImage.bind(this);
+       this.confirmDelete = this.confirmDelete.bind(this);   
+       this.retriveImages();
    }
    resetTo(route) { 
     const navigateAction = StackActions.reset({
@@ -105,21 +109,14 @@ export default class Home extends Component {
       const navigation = this.props.naviation;
       this.retriveImages();
   }
-  componentWillUpdate(){
-      
-  }
-  componentDidUpdate(){
-      
-  }
   componentDidMount() {
       this.props.navigation.setParams({ resetTo: this.resetTo });    
   }
   
-  viewImage(text){
+  viewImage(image){
       this.openActivityIndicator();
-      console.log("Text ", text);
       this.props.navigation.navigate('View',{
-            details:text
+            image:image
       })
       this.closeActivityIndicator();
   }
@@ -134,8 +131,6 @@ export default class Home extends Component {
       var images = JSON.parse(imageslist._bodyText).rows;
       
       images.map((img,index)=>{
-         
-                  console.log(img);
                   images[index].total = <View style={{flex:1, flexDirection:'row'}}>
                     <Text style={{fontSize:18,fontWeight:'bold',color:'#c6535b',textAlign:'left',paddingLeft:10,width:width/2}}>
                        {img.companyname}
@@ -148,6 +143,31 @@ export default class Home extends Component {
       this.setState({images:images});
       this.closeActivityIndicator();
   }
+
+  async deleteImage(id){
+      this.openActivityIndicator(); 
+      var Id = JSON.stringify({id:id});
+      let deleteImg = await deleteImage(Id).then(function(response){
+        return response;
+      })
+      let remainImages = this.state.images.filter(function(image) { return image.id != id });
+      this.retriveImages();
+      console.log("remainImages ",remainImages);
+  }
+  confirmDelete(id){
+      Alert.alert(
+        'DELETE',
+        'Are you sure want to Delete ?',
+        [
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'OK', onPress: () => {
+                this.deleteImage(id);
+                this.closeActivityIndicator();
+            }},
+        ],
+        { cancelable: false }
+      )      
+  }        
   render() {
     return (
         <ScrollView style={styles.homeScreen} >
@@ -157,16 +177,22 @@ export default class Home extends Component {
                     size="large"
                     color="#c6535b" />
             <List containerStyle={{marginBottom: 20}}>
-                
                 {
-                    this.state.images.map((l) => (
-                        <ListItem
-                            roundAvatar
-                            avatar={{uri:`data:image/jpeg;base64,${l.image}`}}
-                            key={l.id}
-                            title={l.total}
-                            onPress={()=>this.viewImage(l.imagetext)}
-                        />
+                    this.state.images.map((l,index) => (
+                        <Swipeout key={index} right={[{
+                                                        text: 'DELETE',
+                                                        autoClose:true,     
+                                                        backgroundColor: '#c6535b',
+                                                        onPress: () => { this.confirmDelete(l.id); }
+                                                    }]} autoClose={true} backgroundColor= 'transparent'>            
+                            <ListItem
+                                roundAvatar
+                                avatar={{uri:`data:image/jpeg;base64,${l.image}`}}
+                                key={l.id}
+                                title={l.total}
+                                onPress={()=>this.viewImage(l.image)}
+                            />
+                        </Swipeout>
                     ))
                 }
             </List>

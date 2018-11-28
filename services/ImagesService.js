@@ -5,17 +5,21 @@ import {Platform, StyleSheet, Text, View, StatusBar, Dimensions, Alert} from 're
 
 const token = 'Basic a3Jpc3RpOmt1c2hhbDIyMDk=';
 const domain = "http://10.113.175.220:9800/api/receipt"
+const headers = {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': 0,
+                    'Authorization': token
+                };
 export const saveImages = (images) => {
     const URL = `${domain}/createimages`;
     return fetch(URL, {
                 method: 'POST',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
+                headers: headers,
                 body: images,
-            })//.then((response) => response.json())
+            })
             .then((responseJson) => {
                 return responseJson;
             })
@@ -28,13 +32,9 @@ export const deleteImage = (imageId) => {
     const URL = `${domain}/deleteimage`;
     return fetch(URL, {
                 method: 'POST',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
+                headers: headers,
                 body: imageId,
-            })//.then((response) => response.json())
+            })
             .then((responseJson) => {
                 return responseJson;
             })
@@ -47,11 +47,7 @@ export const getImages = (user) => {
     const URL = `${domain}/getimages`;
     return fetch(URL, {
                 method: 'POST',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
+                headers: headers,
                 body: user,
             })
             .then((responseJson) => {
@@ -67,13 +63,9 @@ export const sendImage = (images) => {
     const URL = `${domain}/detectTextFromImage`;
     return fetch(URL, {
                 method: 'POST',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
+                headers: headers,
                 body: images,
-            })//.then((response) => response.json())
+            })
             .then((responseJson) => {
                 return responseJson;
             })

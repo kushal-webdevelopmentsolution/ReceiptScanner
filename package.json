@@ -18,6 +18,7 @@
     "react-native-pdf": "^5.0.9",
     "react-native-router-flux": "^4.0.5",
     "react-native-scaled-image": "0.0.1",
+    "react-native-swipeout": "^2.3.6",
     "react-native-tesseract-ocr": "^1.0.10",
     "react-native-vector-icons": "^6.0.2",
     "react-native-view-pdf": "^0.5.6",

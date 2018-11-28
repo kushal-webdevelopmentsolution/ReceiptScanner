@@ -46,14 +46,15 @@ export default class DocumentScanner extends Component {
       this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
       this.setAmountModalVisible = this.setAmountModalVisible.bind(this);
       this.onSubmit = this.onSubmit.bind(this);
-   }
-   resetTo(route) {
+  }
+  resetTo(route) {
     const navigateAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: route })],
     });
     this.props.navigation.dispatch(navigateAction);
   }  
+  
   static navigationOptions = ({navigation, styles}) => ({
         title: 'Scanner',
         headerStyle: {
@@ -87,12 +88,15 @@ export default class DocumentScanner extends Component {
             />
         ),
       })    
+  
   openActivityIndicator(){
      this.setState({isLoading:true});
   }
+  
   closeActivityIndicator(){
       this.setState({isLoading:false});
   }
+  
   async componentWillMount() {   
       this.openActivityIndicator();
       const navigation = this.props.naviation;
@@ -101,10 +105,12 @@ export default class DocumentScanner extends Component {
       })
       this.setState({user:loggedInUser});
   }
+  
   componentDidMount() {
       this.closeActivityIndicator();
       this.props.navigation.setParams({ resetTo: this.resetTo });
   }
+  
   renderDetectionType() {
     switch (this.state.lastDetectionType) {
       case 0:
@@ -163,6 +169,7 @@ export default class DocumentScanner extends Component {
           
       }
   }
+  
   onSubmit(){
       if(this.state.user.id){       
          var images = {};
@@ -171,12 +178,10 @@ export default class DocumentScanner extends Component {
          images.imageText = this.state.imageText;
          images.pdf_url = null;
          images.companyName = this.state.companyName.trim();
-         images.totalAmount = this.state.totalAmount;
-         console.log("Image Object ", images);      
+         images.totalAmount = this.state.totalAmount;     
          saveImages(JSON.stringify(images));
-         /*this.props.navigation.navigate('View',{
-                    details:imageText
-         });*/
+         this.setAmountModalVisible(!this.state.amountModal);  
+         this.props.navigation.navigate('Home');
       }else{
          Alert.alert('Session Timedout !!');
       } 

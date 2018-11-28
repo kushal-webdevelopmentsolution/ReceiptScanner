@@ -12,13 +12,15 @@ import {
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import Scanner from 'react-native-document-scanner';
+import ScaledImage from 'react-native-scaled-image';
 const {width, height} = Dimensions.get('window');
+const imgScrollViewHeight = height - 150;
 export default class ViewReceiptDetail extends Component {
   constructor(props) {
     super(props);
     this.state={
-        lines:this.props.navigation.state.params.details.split('\n')
+        image:this.props.navigation.state.params.image,
+        imgHeight:imgScrollViewHeight
     }  
   }
 
@@ -58,21 +60,18 @@ export default class ViewReceiptDetail extends Component {
   
   render() {
     return (
-            <ScrollView contentContainerStyle={styles.container}>
-                {this.state.lines.map(function(line,index){
-                   return (<Text key={index} style={styles.receiptContent}>{line}</Text>)
-                })}
+            <ScrollView style={styles.imageView}>    
+                    <ScaledImage style={{width:width,height:this.state.imgHeight,resizeMode:'contain'}} source={{ uri:`data:image/jpeg;base64,${this.state.image}`}} />
             </ScrollView>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  pageView: {
-    flex: 1,
-    backgroundColor:'#F5F5F5',
-  },    
+const styles = StyleSheet.create({   
   container: {
+  },
+  imageView:{
+    paddingTop:5,
   },
   receiptContent:{
     paddingLeft:40,

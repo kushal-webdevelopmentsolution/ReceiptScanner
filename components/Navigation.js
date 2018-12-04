@@ -67,9 +67,6 @@ const LoginNavigation = createStackNavigator({
     },
     Signup:{
       screen:Signup,
-      navigationOptions:() => ({
-        header:null
-      }) 
     },
     Home:{
       screen:AppNavigation,

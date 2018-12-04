@@ -1,9 +1,24 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,ScrollView, StatusBar,ActivityIndicator,AsyncStorage,Dimensions,Alert} from 'react-native';
-import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
-import { Icon,List,ListItem } from 'react-native-elements';
+import {Platform,
+        RefreshControl,
+        StyleSheet,
+        Text,
+        View,
+        ScrollView,
+        StatusBar,
+        ActivityIndicator,
+        AsyncStorage,
+        Dimensions,
+        Alert} from 'react-native';
+import {createStackNavigator,
+        SafeAreaView,
+        StackActions,
+        NavigationActions } from 'react-navigation';
+import {Icon,
+        List,
+        ListItem } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import AppStatusBar from './AppStatusBar.js';
 import CameraScanner from './Scanner.js';
@@ -12,12 +27,6 @@ import ViewReceiptDetail from './ViewReceiptDetail.js';
 import {getImages,deleteImage} from '../services/ImagesService.js';
 
 const {width, height} = Dimensions.get('window');
-const instructions = Platform.select({
-  ios: 'This is Home Page',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 const styles = StyleSheet.create({
   pageView: {
@@ -36,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
    },
-   Icon:{
+  Icon:{
        fontSize:14,
        color:'#F5F5F5',
    },    
@@ -46,6 +55,7 @@ export default class Home extends Component {
    constructor(props){
        super(props);
        this.state={
+         refreshing: false,   
          isLoading:false,
          images:[],   
        }
@@ -55,8 +65,8 @@ export default class Home extends Component {
        this.retriveImages = this.retriveImages.bind(this);
        this.viewImage = this.viewImage.bind(this);
        this.deleteImage = this.deleteImage.bind(this);
-       this.confirmDelete = this.confirmDelete.bind(this);   
-       this.retriveImages();
+       this.confirmDelete = this.confirmDelete.bind(this);
+       this.refreshListView = this.refreshListView.bind();
    }
    resetTo(route) { 
     const navigateAction = StackActions.reset({
@@ -80,7 +90,7 @@ export default class Home extends Component {
             <Icon name='camera' 
                   type='font-awesome'
                   containerStyle={{paddingRight:20}} 
-                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}}
                   onPress={() =>{
                                  navigation.state.params.resetTo('Scanner');
                                 }}
@@ -112,13 +122,17 @@ export default class Home extends Component {
   componentDidMount() {
       this.props.navigation.setParams({ resetTo: this.resetTo });    
   }
-  
   viewImage(image){
       this.openActivityIndicator();
       this.props.navigation.navigate('View',{
             image:image
       })
       this.closeActivityIndicator();
+  }
+  refreshListView(){
+    this.setState({refreshing:true})
+    this.retriveImages();    
+    this.setState({refreshing:false}) //Stop Rendering Spinner
   }
 
   async retriveImages(){     
@@ -170,13 +184,18 @@ export default class Home extends Component {
   }        
   render() {
     return (
-        <ScrollView style={styles.homeScreen} >
+        <ScrollView style={styles.homeScreen}
+            RefreshControl={
+                <RefreshControl
+                    refreshing={this.state.refreshing}
+                    onRefresh={()=>this.refreshListView()} />
+            }>
             <ActivityIndicator 
                     style={styles.activityIndicator}
                     animating={this.state.isLoading}
                     size="large"
                     color="#c6535b" />
-            <List containerStyle={{marginBottom: 20}}>
+            <List containerStyle={{marginBottom: 10}}>
                 {
                     this.state.images.map((l,index) => (
                         <Swipeout key={index} right={[{

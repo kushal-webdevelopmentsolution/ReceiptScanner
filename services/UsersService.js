@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, StatusBar, Dimensions, Alert} from 'react-native';
 
 const token = 'Basic a3Jpc3RpOmt1c2hhbDIyMDk=';
-const domain = "http://10.113.175.220:9800/common/receipt"
+const domain = "http://ec2-18-188-134-14.us-east-2.compute.amazonaws.com/common/receipt"
 export const signup = (user) => {
     const URL = `${domain}/createuser`;
     return fetch(URL, {

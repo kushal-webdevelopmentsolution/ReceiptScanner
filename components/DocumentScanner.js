@@ -19,7 +19,7 @@ import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActi
 import { Icon,FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
 import Scanner from 'react-native-document-scanner';
 import ScaledImage from 'react-native-scaled-image';
-import RNImageToPdf from 'react-native-image-to-pdf';
+import DatePicker from 'react-native-datepicker';
 import {saveImages,sendImage,imgToText} from '../services/ImagesService.js';
 import ViewReceiptDetail from './ViewReceiptDetail.js';
 import AppStatusBar from './AppStatusBar.js';
@@ -33,19 +33,22 @@ export default class DocumentScanner extends Component {
       image: null,
       flashEnabled: false,
       useFrontCam: false,
+      enableDatePicker:false,    
       isLoading:false,
       imgHeight:height - 150,
       user:null,
       amountModal:false,
       companyName:null,
       totalAmount:null,
-      imageText:null    
+      imageText:null,
+      business_date: new Date()
     };
       this.resetTo = this.resetTo.bind(this);
       this.openActivityIndicator = this.openActivityIndicator.bind(this);
       this.closeActivityIndicator = this.closeActivityIndicator.bind(this);
       this.setAmountModalVisible = this.setAmountModalVisible.bind(this);
       this.onSubmit = this.onSubmit.bind(this);
+      this.setDate = this.setDate.bind(this);
   }
   resetTo(route) {
     const navigateAction = StackActions.reset({
@@ -154,14 +157,25 @@ export default class DocumentScanner extends Component {
            this.setState({imageText:imageText});
            var strArray = imageText.split('\n');
            strArray.map((str)=>{
-              if(str.includes('Total') || str.includes('Available Balance') || str.includes('Transaction Amount') || str.includes('Amount')){
-                   console.log("Amount ",str);
-                   if (str.match(/[+-]?\d+(?:\.\d+)?/g) != null) {
+              if(str.toLowerCase().includes('total')
+              || str.toLowerCase().includes('available balance')
+              || str.toLowerCase().includes('transaction amount')
+              || str.toLowerCase().includes('amount')
+              || str.toLowerCase().includes('cash')){
+                   console.log("Amount String",str);
+                  // console.log("Out Side Amount ",str.match(/[+-]?\d+(?:\.\d+)?/g)[0]);
+                   let amount = str.match(/[+-]?\d+(?:\.\d+)?/g);
+                   if (amount != null) {
+                       try{
+                        console.log("Amount ",str.match(/[+-]?\d+(?:\.\d+)?/g)[0]);
                         this.setState({companyName:strArray[0]});
                         this.setState({totalAmount:str.match(/[+-]?\d+(?:\.\d+)?/g)[0]});        
                         this.setAmountModalVisible(!this.state.amountModal)
+                       }catch(err){
+                           console.log("Error ",err);
+                       }
                    }else{
-                       Alert.alert("Oops! Amount not read from Photo, Please Retake Photo");
+                      //Alert.alert("Oops! Amount not read from Photo, Please Retake Photo");
                    }
                   
               }   
@@ -177,11 +191,16 @@ export default class DocumentScanner extends Component {
          images.image = this.state.image;
          images.imageText = this.state.imageText;
          images.pdf_url = null;
+         images.business_date = this.state.business_date;           
          images.companyName = this.state.companyName.trim();
-         images.totalAmount = this.state.totalAmount;     
+         images.totalAmount = this.state.totalAmount;
+         console.log(images);      
          saveImages(JSON.stringify(images));
-         this.setAmountModalVisible(!this.state.amountModal);  
-         this.props.navigation.navigate('Home');
+         this.setAmountModalVisible(!this.state.amountModal);
+         this.timeoutCheck = setTimeout(() => {
+            this.props.navigation.navigate('Home');
+         }, 2000);  
+         
       }else{
          Alert.alert('Session Timedout !!');
       } 
@@ -189,6 +208,10 @@ export default class DocumentScanner extends Component {
 
   setAmountModalVisible(visible) {
     this.setState({amountModal: visible});
+  }
+  setDate(newDate) {
+    this.setState({business_date: newDate})
+      this.setState({enableDatePicker:false});
   }
 
   render() {
@@ -272,6 +295,32 @@ export default class DocumentScanner extends Component {
                     placeholder="Amount"
                     value={this.state.totalAmount}
                     onChangeText={(total) => this.setState({totalAmount:total})}/>
+                
+                <FormLabel labelStyle={{color: '#c6535b',fontSize:16}}>Business Date</FormLabel>
+                <DatePicker
+                    style={{width: 200}}
+                    date={this.state.business_date}
+                    mode="date"
+                    placeholder="select date"
+                    format="MM-DD-YYYY"
+                    minDate="01-01-1990"
+                    maxDate={ new Date()}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    showIcon={false}
+                    customStyles={{
+                        dateIcon: {
+                            position: 'absolute',
+                            left: 0,
+                            top: 4,
+                            marginLeft: 0
+                        },
+                        dateInput: {
+                            marginLeft: 36
+                        }
+                    }}
+                    onDateChange={(date) => {this.setState({business_date: date})}}
+                />
                 
                 <View style={{marginTop:22,flex:1,flexDirection: 'row',}}>
                     <Button buttonStyle={{width:150,height:50,elevation:1}} fontWeight='bold' backgroundColor='#c6535b' onPress={() => this.setAmountModalVisible(!this.state.amountModal)} title="Close" />

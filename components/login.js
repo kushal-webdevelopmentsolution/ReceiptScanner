@@ -66,8 +66,6 @@ export default class Login extends Component {
           this.validationMessage.email= 'Enter Email address';
       }else if (input && field==='email' && !emailCheck.test(input)){
           this.validationMessage.email= 'Email address is not valid';
-      }else{
-          this.validationMessage.email= '';
       }
       if(!input && field==='password'){
           this.validationMessage.password= 'Enter Password';
@@ -107,7 +105,7 @@ export default class Login extends Component {
       if(authorize.rowCount === 0){
             this.emailExists();
             setTimeout(()=>{this.closeActivityIndicator()},3000);
-          resetTo('Login')
+            this.resetTo('Login')
       }else{
           authorize.rows[0].isLoggedin='true';
           var setUser = await AsyncStorage.setItem('user', JSON.stringify(authorize.rows[0]));
@@ -154,7 +152,7 @@ export default class Login extends Component {
                 <View style={styles.buttonView}> 
                     <Button buttonStyle={{width:150,elevation:1}} fontWeight='bold' backgroundColor='#c6535b' onPress={this.onSubmit} title="Log In" />
                 </View>
-                <TouchableOpacity style={styles.registerLink} onPress={() => this.resetTo('Signup')}>
+                <TouchableOpacity style={styles.registerLink} onPress={() => this.props.navigation.navigate('Signup')}>
                 <Text style={{color: '#c6535b',fontSize:16,fontWeight:'700',textDecorationStyle:'solid',textDecorationLine:'underline'}}>Are you Registered ?</Text>
                 </TouchableOpacity>
 

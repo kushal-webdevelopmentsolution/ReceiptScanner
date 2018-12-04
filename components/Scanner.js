@@ -4,9 +4,6 @@ import React, {Component} from 'react';
 import {Platform,StyleSheet,Text,Alert,View,PixelRatio,TouchableOpacity,Image} from 'react-native';
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import { RNCamera as Camera } from "react-native-camera";
-import RNTesseractOcr from 'react-native-tesseract-ocr';
-import ImagePicker from 'react-native-image-picker';
 import AppStatusBar from './AppStatusBar.js';
 import Images from '../modal/Images.js';
 import Transactions from '../modal/Transactions.js';
@@ -54,12 +51,6 @@ class CameraScanner extends Component {
       }
       else {
         let source = { uri: response.uri };
-        
-        
-        // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-          
-       
         var ocrData = new FormData();
           ocrData.append("base64Image",'data:image/jpeg;base64,' + response.data );
           ocrData.append("filetype"   , "JPG");

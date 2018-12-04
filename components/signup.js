@@ -16,7 +16,6 @@ import {
 
 import { createStackNavigator, SafeAreaView, createBottomTabNavigator, StackActions, NavigationActions } from 'react-navigation';
 import { Icon,FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
-import Scanner from 'react-native-document-scanner';
 import {signup} from '../services/UsersService.js';
 var {height, width} = Dimensions.get('window');
 export default class Signup extends Component {
@@ -46,6 +45,30 @@ export default class Signup extends Component {
                           };
   }
     
+  static navigationOptions = ({navigation, styles}) => ({
+        title: 'Register',
+        headerStyle: {
+            backgroundColor: '#c6535b',
+        },
+        headerLayoutPreset: 'center',
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize:20,
+        },
+        headerRight: null,
+       headerLeft: (
+            <Icon name='md-arrow-round-back' 
+                  type='ionicon'
+                  containerStyle={{paddingLeft:20}} 
+                  iconStyle={{fontSize:28,color:'#F5F5F5'}} 
+                  onPress={() => navigation.goBack()}
+            />
+        ),
+      })    
+  componentWillMount() {
+      const navigation = this.props.naviation;
+  }    
   validateInputs(input,field){
       let emailCheck = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
       if(input && field==='fname'){
@@ -58,8 +81,6 @@ export default class Signup extends Component {
           this.validationMessage.email= 'Enter Email address';
       }else if (input && field==='email' && !emailCheck.test(input)){
           this.validationMessage.email= 'Email address is not valid';
-      }else{
-          this.validationMessage.email= '';
       }
       if(!input && field==='password'){
           this.validationMessage.password= 'Enter Password';
@@ -68,8 +89,6 @@ export default class Signup extends Component {
           this.validationMessage.confirm= 'Enter Confirm Password';
       }else if(input && field==='confirm' && (input !== this.state.password)){
           this.validationMessage.confirm= 'Confirm Password not match';
-      }else{
-          this.validationMessage.confirm= '';
       }
       
   }
@@ -149,7 +168,7 @@ export default class Signup extends Component {
                         this.setState({email:email});
                         this.validateInputs(email,"email")
                 }}/>
-                { this.state.email ?
+                { this.state.email  ?
                 <FormValidationMessage>{this.validationMessage.email}</FormValidationMessage> : null }
                 
                 <FormLabel>Password</FormLabel>
